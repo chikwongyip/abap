@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>ZCL_EXCEL_HANDLE</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for class: ZCL_EXCEL_HANDLE</h2>
+<h3> Description: Excel Handle</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="codeComment">
+**************************************************************************<br />
+*   Class attributes.                                                    *<br />
+**************************************************************************<br />
+   </div>
+   <div class="code">
+Instantiation: Public<br />
+Message class: <br />
+State: Implemented<br />
+Final Indicator: X<br />
+R/3 Release: 750<br />
+<br />
+   </div>
+   <div class="codeComment">
+**************************************************************************<br />
+*   Public section of class.                                             *<br />
+**************************************************************************<br />
+   </div>
+   <div class="code">
+class ZCL_EXCEL_HANDLE definition<br />
+&nbsp;&nbsp;public<br />
+&nbsp;&nbsp;final<br />
+&nbsp;&nbsp;create&nbsp;public&nbsp;.<br />
+<br />
+public section.<br />
+<br />
+&nbsp;&nbsp;methods&nbsp;<a&nbsp;href="public_methods/upload_excel.html">UPLOAD_EXCEL</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;importing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BEGIN_COL&nbsp;type&nbsp;I<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BEGIN_ROW&nbsp;type&nbsp;I<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;END_ROW&nbsp;type&nbsp;I&nbsp;default&nbsp;65535<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLE_STRUCT&nbsp;type&nbsp;ref&nbsp;to&nbsp;CL_ABAP_STRUCTDESCR<br />
+&nbsp;&nbsp;&nbsp;&nbsp;changing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WA&nbsp;type&nbsp;ANY<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ITAB&nbsp;type&nbsp;TABLE&nbsp;.<br />
+&nbsp;&nbsp;methods&nbsp;<a&nbsp;href="public_methods/get_oaor_url.html">GET_OAOR_URL</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;importing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OBJECT_KEY&nbsp;type&nbsp;BDS_TYPEID<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DOC_DESCRIPTION&nbsp;type&nbsp;CHAR20<br />
+&nbsp;&nbsp;&nbsp;&nbsp;returning<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value(URL)&nbsp;type&nbsp;CHAR255&nbsp;.<br />
+&nbsp;&nbsp;methods&nbsp;<a&nbsp;href="public_methods/create_excel.html">CREATE_EXCEL</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;importing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;URL&nbsp;type&nbsp;CHAR255<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value(OPEN_INPLACE)&nbsp;type&nbsp;CHAR1&nbsp;optional&nbsp;.<br />
+&nbsp;&nbsp;methods&nbsp;<a&nbsp;href="public_methods/select_sheet.html">SELECT_SHEET</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;importing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SHEET_NAME&nbsp;type&nbsp;CHAR50&nbsp;.<br />
+&nbsp;&nbsp;methods&nbsp;<a&nbsp;href="public_methods/fill_cell.html">FILL_CELL</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;importing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATA_VALUE&nbsp;type&nbsp;ZEXPORT_EXCEL_TAB&nbsp;.<br />
+&nbsp;&nbsp;methods&nbsp;<a&nbsp;href="public_methods/fill_table.html">FILL_TABLE</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;importing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLE&nbsp;type&nbsp;TABLE<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;START_ROW&nbsp;type&nbsp;I<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;START_COL&nbsp;type&nbsp;I&nbsp;.<br />
+&nbsp;&nbsp;methods&nbsp;<a&nbsp;href="public_methods/exec_macro.html">EXEC_MACRO</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;importing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MACRO_STRING&nbsp;type&nbsp;C&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO_FLUSH&nbsp;type&nbsp;C&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM1&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM2&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM3&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM4&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM5&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM6&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM7&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM8&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM9&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM10&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM11&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM12&nbsp;type&nbsp;ANY&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PARAM_COUNT&nbsp;type&nbsp;I&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SCRIPT_NAME&nbsp;type&nbsp;C&nbsp;optional<br />
+&nbsp;&nbsp;&nbsp;&nbsp;changing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ERROR_STRING&nbsp;type&nbsp;C<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RETVALUE&nbsp;type&nbsp;ANY&nbsp;.<br />
+&nbsp;&nbsp;methods&nbsp;<a&nbsp;href="public_methods/print_excel.html">PRINT_EXCEL</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;importing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value(PROMPT_USER)&nbsp;type&nbsp;CHAR1&nbsp;optional&nbsp;.<br />
+&nbsp;&nbsp;methods&nbsp;<a&nbsp;href="public_methods/upload_excel_new.html">UPLOAD_EXCEL_NEW</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;importing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BEGIN_COL&nbsp;type&nbsp;I<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BEGIN_ROW&nbsp;type&nbsp;I<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;END_ROW&nbsp;type&nbsp;I&nbsp;default&nbsp;65535<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLE_STRUCT&nbsp;type&nbsp;ref&nbsp;to&nbsp;CL_ABAP_STRUCTDESCR<br />
+&nbsp;&nbsp;&nbsp;&nbsp;changing<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLE&nbsp;type&nbsp;TABLE&nbsp;.<br />
+<br />
+   </div>
+   <div class="codeComment">
+**************************************************************************<br />
+*   Private section of class.                                            *<br />
+**************************************************************************<br />
+   </div>
+   <div class="code">
+private section.<br />
+<br />
+   </div>
+   <div class="codeComment">
+**************************************************************************<br />
+*   Protected section of class.                                          *<br />
+**************************************************************************<br />
+   </div>
+   <div class="code">
+protected section.<br />
+<br />
+&nbsp;&nbsp;data&nbsp;FILE_TABLE&nbsp;type&nbsp;FILETABLE&nbsp;.<br />
+&nbsp;&nbsp;class-data&nbsp;EXCEL_DOCUMENT&nbsp;type&nbsp;ref&nbsp;to&nbsp;I_OI_DOCUMENT_PROXY&nbsp;.<br />
+&nbsp;&nbsp;class-data&nbsp;EXCEL_SPREADSHEET&nbsp;type&nbsp;ref&nbsp;to&nbsp;I_OI_SPREADSHEET&nbsp;.<br />
+&nbsp;&nbsp;data&nbsp;EXCEL_ERROR&nbsp;type&nbsp;ref&nbsp;to&nbsp;I_OI_ERROR&nbsp;.<br />
+&nbsp;&nbsp;data&nbsp;EXCEL_CONTROL&nbsp;type&nbsp;ref&nbsp;to&nbsp;I_OI_CONTAINER_CONTROL&nbsp;.<br />
+&nbsp;&nbsp;data&nbsp;RETCODE&nbsp;type&nbsp;SOI_RET_STRING&nbsp;.<br />
+&nbsp;&nbsp;data&nbsp;RANGEITEM&nbsp;type&nbsp;SOI_RANGE_ITEM&nbsp;.<br />
+&nbsp;&nbsp;data&nbsp;RANGES&nbsp;type&nbsp;SOI_RANGE_LIST&nbsp;.<br />
+&nbsp;&nbsp;data&nbsp;EXCEL_INPUT&nbsp;type&nbsp;SOI_GENERIC_TABLE&nbsp;.<br />
+&nbsp;&nbsp;data&nbsp;EXCEL_INPUT_WA&nbsp;type&nbsp;SOI_GENERIC_ITEM&nbsp;.<br />
+<br />
+   </div>
+   <div class="codeComment">
+**************************************************************************<br />
+*   Types section of class.                                              *<br />
+**************************************************************************<br />
+*"* dummy include to reduce generation dependencies between<br />
+*"* class ZCL_EXCEL_HANDLE and it's users.<br />
+*"* touched if any type reference has been changed<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

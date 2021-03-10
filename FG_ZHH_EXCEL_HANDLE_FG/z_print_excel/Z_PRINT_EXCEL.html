@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>Z_PRINT_EXCEL</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for function Z_PRINT_EXCEL</h2>
+<h3> Description: print excel</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="code">
+FUNCTION Z_PRINT_EXCEL.<br />
+   </div>
+   <div class="codeComment">
+*"----------------------------------------------------------------------<br />
+*"*"Local Interface:<br />
+*"  IMPORTING<br />
+*"     REFERENCE(URL) TYPE  CHAR255<br />
+*"     REFERENCE(EMBED) TYPE  CHAR1 OPTIONAL<br />
+*"     REFERENCE(SHEET_NAME) TYPE  CHAR50 OPTIONAL<br />
+*"     REFERENCE(TAB_1_ROW) TYPE  INT4 OPTIONAL<br />
+*"     REFERENCE(TAB_1_COL) TYPE  INT4 OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_EXEC_MACRO_BEFORE) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_EXEC_MACRO_AFTER) TYPE  STRING OPTIONAL<br />
+*"  TABLES<br />
+*"      DATA_VALUE TYPE  ZEXPORT_EXCEL_TAB OPTIONAL<br />
+*"      TABLE_1 TYPE  TABLE OPTIONAL<br />
+*"----------------------------------------------------------------------<br />
+
+<div class="codeComment">*       <a href ="global-z_print_excel.html">Global data declarations</a></div><br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;_url&nbsp;=&nbsp;url.<br />
+&nbsp;&nbsp;&nbsp;_embed&nbsp;=&nbsp;embed.<br />
+&nbsp;&nbsp;&nbsp;_sheet_name&nbsp;=&nbsp;sheet_name.<br />
+&nbsp;&nbsp;&nbsp;_tab_1_row&nbsp;=&nbsp;tab_1_row.<br />
+&nbsp;&nbsp;&nbsp;_tab_1_col&nbsp;=&nbsp;tab_1_col.<br />
+&nbsp;&nbsp;&nbsp;_data_value&nbsp;=&nbsp;data_value[].<br />
+&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;&nbsp;&nbsp;table_1[]&nbsp;TO&nbsp;&lt;_table_1&gt;.<br />
+&nbsp;&nbsp;&nbsp;_i_callback_exec_macro_before&nbsp;=&nbsp;i_callback_exec_macro_before.<br />
+&nbsp;&nbsp;&nbsp;_i_callback_exec_macro_after&nbsp;=&nbsp;i_callback_exec_macro_after.<br />
+<br />
+&nbsp;&nbsp;&nbsp;IF&nbsp;_sheet_name&nbsp;IS&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sheet_name&nbsp;=&nbsp;'Sheet1'.<br />
+&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;IF&nbsp;_embed&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;SCREEN&nbsp;0500.<br />
+&nbsp;&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;export_excel.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+<br />
+ENDFUNCTION.<br />
+   </div>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&      Module  STATUS_0500  OUTPUT<br />
+*&---------------------------------------------------------------------*<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;STATUS_0500&nbsp;&nbsp;OUTPUT<br />
+   </div>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&      Module  USER_COMMAND_0500  INPUT<br />
+*&---------------------------------------------------------------------*<br />
+*       text<br />
+*----------------------------------------------------------------------*<br />
+   </div>
+   <div class="code">
+MODULE USER_COMMAND_0500 INPUT.<br />
+&nbsp;&nbsp;save_ok&nbsp;=&nbsp;ok_code.<br />
+&nbsp;&nbsp;CLEAR&nbsp;ok_code.<br />
+&nbsp;&nbsp;DATA:&nbsp;l_valid&nbsp;type&nbsp;c.<br />
+&nbsp;&nbsp;CASE&nbsp;save_ok.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'SAVE'.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'BACK'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LEAVE&nbsp;TO&nbsp;SCREEN&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'EXIT'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LEAVE&nbsp;PROGRAM.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;OTHERS.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LEAVE&nbsp;TO&nbsp;SCREEN&nbsp;0.<br />
+&nbsp;&nbsp;ENDCASE.<br />
+ENDMODULE.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

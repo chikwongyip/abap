@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>UPLOAD_EXCEL_NEW</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: UPLOAD_EXCEL_NEW</h2>
+<h3> Description: Upload excel new version</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="codeComment">
+**************************************************************************<br />
+*&nbsp;&nbsp;&nbsp;Method&nbsp;attributes.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*<br />
+**************************************************************************<br />
+   </div>
+   <div class="code">
+Instantiation: Public<br />
+   </div>
+   <div class="codeComment">
+**************************************************************************<br />
+<br />
+   </div>
+   <div class="code">
+METHOD upload_excel_new.<br />
+&nbsp;&nbsp;DATA:rc&nbsp;TYPE&nbsp;i.<br />
+&nbsp;&nbsp;DATA:action&nbsp;TYPE&nbsp;i.<br />
+&nbsp;&nbsp;DATA:wa_file&nbsp;LIKE&nbsp;LINE&nbsp;OF&nbsp;file_table.<br />
+&nbsp;&nbsp;DATA:end_col&nbsp;TYPE&nbsp;i.<br />
+&nbsp;&nbsp;DATA:excel_tab&nbsp;TYPE&nbsp;TABLE&nbsp;OF&nbsp;alsmex_tabline,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_excel&nbsp;&nbsp;TYPE&nbsp;alsmex_tabline.<br />
+&nbsp;&nbsp;DATA:index&nbsp;TYPE&nbsp;i&nbsp;VALUE&nbsp;1.<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;DATA:name&nbsp;TYPE&nbsp;string.<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;DATA:localfile&nbsp;TYPE&nbsp;localfile.<br />
+&nbsp;&nbsp;DATA:lines&nbsp;TYPE&nbsp;i.<br />
+&nbsp;&nbsp;DATA:BEGIN&nbsp;OF&nbsp;wa_cmp,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;TYPE&nbsp;string,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;TYPE&nbsp;i,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;END&nbsp;OF&nbsp;&nbsp;&nbsp;wa_cmp,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itab_cmp&nbsp;LIKE&nbsp;TABLE&nbsp;OF&nbsp;wa_cmp.<br />
+&nbsp;&nbsp;DATA:wa_dyn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itab_dyn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data.<br />
+&nbsp;&nbsp;FIELD-SYMBOLS:&nbsp;&lt;wa_dyn&gt;&nbsp;&nbsp;&nbsp;TYPE&nbsp;ANY,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;itab_dyn&gt;&nbsp;TYPE&nbsp;table.<br />
+<br />
+<br />
+   </div>
+   <div class="codeComment">
+*gui&nbsp;显示&nbsp;选择上传文件<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;CLEAR:rc,file_table,action.<br />
+&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;cl_gui_frontend_services=&gt;file_open_dialog<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING&nbsp;&nbsp;window_title&nbsp;=&nbsp;'Select&nbsp;File&nbsp;To&nbsp;Upload'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default_filename&nbsp;&nbsp;=&nbsp;space<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&nbsp;&nbsp;file_table&nbsp;=&nbsp;file_table<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;rc<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user_action&nbsp;=&nbsp;action.<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;检查是否有文件<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;file_table&nbsp;INTO&nbsp;wa_file&nbsp;INDEX&nbsp;1.<br />
+&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;=&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA(dyntable)&nbsp;=&nbsp;cl_abap_tabledescr=&gt;create(&nbsp;p_line_type&nbsp;=&nbsp;table_struct&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;itab_dyn&nbsp;TYPE&nbsp;HANDLE&nbsp;dyntable.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;itab_dyn-&gt;*&nbsp;TO&nbsp;&lt;itab_dyn&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;wa_dyn&nbsp;LIKE&nbsp;LINE&nbsp;OF&nbsp;&lt;itab_dyn&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;wa_dyn-&gt;*&nbsp;TO&nbsp;&lt;wa_dyn&gt;.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA(itab_table_struct)&nbsp;=&nbsp;table_struct-&gt;get_components(&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DESCRIBE&nbsp;TABLE&nbsp;itab_table_struct&nbsp;LINES&nbsp;end_col.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CLEAR:itab_cmp.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;itab_table_struct&nbsp;INTO&nbsp;DATA(wa_table_struct).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEAR:wa_cmp.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cmp-index&nbsp;=&nbsp;index.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cmp-name&nbsp;=&nbsp;wa_table_struct-name.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_cmp&nbsp;TO&nbsp;itab_cmp.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;=&nbsp;index&nbsp;+&nbsp;1.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;MOVE&nbsp;wa_file-filename&nbsp;TO&nbsp;localfile.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'ALSM_EXCEL_TO_INTERNAL_TABLE'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filename&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;localfile<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_begin_col&nbsp;=&nbsp;begin_col<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_begin_row&nbsp;=&nbsp;begin_row<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_end_col&nbsp;&nbsp;&nbsp;=&nbsp;end_col<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_end_row&nbsp;&nbsp;&nbsp;=&nbsp;end_row<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intern&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;excel_tab.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;=&nbsp;1.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DESCRIBE&nbsp;TABLE&nbsp;excel_tab&nbsp;LINES&nbsp;lines.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;excel_tab&nbsp;INTO&nbsp;wa_excel&nbsp;INDEX&nbsp;lines.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;=&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lines&nbsp;=&nbsp;wa_excel-row.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;FIELD-SYMBOLS:&lt;fs&gt;&nbsp;TYPE&nbsp;any.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CLEAR:&lt;itab_dyn&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;lines&nbsp;&gt;&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DO&nbsp;end_row&nbsp;TIMES.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEAR:&lt;wa_dyn&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;excel_tab&nbsp;INTO&nbsp;wa_excel&nbsp;WHERE&nbsp;row&nbsp;=&nbsp;index.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;itab_cmp&nbsp;INTO&nbsp;wa_cmp&nbsp;WITH&nbsp;KEY&nbsp;index&nbsp;=&nbsp;wa_excel-col.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;=&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UNASSIGN&nbsp;&lt;fs&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;COMPONENT&nbsp;wa_cmp-name&nbsp;OF&nbsp;STRUCTURE&nbsp;&lt;wa_dyn&gt;&nbsp;TO&nbsp;&lt;fs&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;fs&gt;&nbsp;=&nbsp;wa_excel-value.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;=&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;&lt;wa_dyn&gt;&nbsp;TO&nbsp;&lt;itab_dyn&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index&nbsp;=&nbsp;index&nbsp;+&nbsp;1.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDDO.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;LINES&nbsp;OF&nbsp;&nbsp;&lt;itab_dyn&gt;&nbsp;TO&nbsp;table.<br />
+&nbsp;&nbsp;ENDIF.<br />
+ENDMETHOD.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

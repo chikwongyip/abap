@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>Z_CREATE_ALV</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for function Z_CREATE_ALV</h2>
+<h3> Description: Z_CREATE_ALV</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="code">
+FUNCTION Z_CREATE_ALV.<br />
+   </div>
+   <div class="codeComment">
+*"----------------------------------------------------------------------<br />
+*"*"Local Interface:<br />
+*"  IMPORTING<br />
+*"     REFERENCE(ALV_STRUCTDESCR) TYPE REF TO  CL_ABAP_STRUCTDESCR<br />
+*"     REFERENCE(DB_TAB_NAME) TYPE  TABNAME OPTIONAL<br />
+*"     REFERENCE(ALV_TITLE) TYPE  SYTITLE OPTIONAL<br />
+*"     REFERENCE(ALV_MAX_SIZE) TYPE  CHAR1 OPTIONAL<br />
+*"     REFERENCE(ALV_LAYOUT) TYPE  LVC_S_LAYO OPTIONAL<br />
+*"     REFERENCE(STATUS_NAME) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(ALV_EDIT_MODE) TYPE  I DEFAULT -1<br />
+*"     REFERENCE(I_CALLBACK_MOD_FIELD_CAT) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_SELECT_DATA) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_VERIFY_INPUT) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_USER_COMMAND) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_HOTSPOT_CLICK) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_DOUBLE_CLICK) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_SUBTOTAL_TEXT) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_F4_CLICK) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_BEFORE_SAVE_DATA) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_SAVE_DATA) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_DATA_CHANGED) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_DATA_CHANGED_FNSH) TYPE  STRING OPTIONAL<br />
+*"     REFERENCE(I_CALLBACK_DROP_LIST) TYPE  STRING OPTIONAL<br />
+*"  TABLES<br />
+*"      T_EXCLUDE TYPE  UI_FUNCTIONS OPTIONAL<br />
+*"      T_ALLOW_BLANK_FIELD TYPE  ZLVC_FNAME OPTIONAL<br />
+*"      T_SORT TYPE  LVC_T_SORT OPTIONAL<br />
+*"      T_F4 STRUCTURE  LVC_S_F4 OPTIONAL<br />
+*"----------------------------------------------------------------------<br />
+
+<div class="codeComment">*       <a href ="global-z_create_alv.html">Global data declarations</a></div><br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;g_alv_structdescr&nbsp;=&nbsp;alv_structdescr.<br />
+&nbsp;&nbsp;g_db_tab_name&nbsp;=&nbsp;db_tab_name.<br />
+&nbsp;&nbsp;IF&nbsp;alv_title&nbsp;IS&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;g_alv_title&nbsp;=&nbsp;sy-title.<br />
+&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;g_alv_title&nbsp;=&nbsp;alv_title.<br />
+&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;g_alv_max_width&nbsp;=&nbsp;alv_max_size.<br />
+&nbsp;&nbsp;IF&nbsp;status_name&nbsp;IS&nbsp;NOT&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;g_status_name&nbsp;=&nbsp;status_name.<br />
+&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;_i_callback_mod_field_cat&nbsp;=&nbsp;i_callback_mod_field_cat.<br />
+&nbsp;&nbsp;_i_callback_select_data&nbsp;=&nbsp;i_callback_select_data.<br />
+&nbsp;&nbsp;_i_callback_verify_input&nbsp;=&nbsp;i_callback_verify_input.<br />
+&nbsp;&nbsp;_i_callback_user_command&nbsp;=&nbsp;i_callback_user_command.<br />
+&nbsp;&nbsp;_i_callback_hotspot_click&nbsp;=&nbsp;i_callback_hotspot_click.<br />
+&nbsp;&nbsp;_i_callback_double_click&nbsp;=&nbsp;i_callback_double_click.<br />
+&nbsp;&nbsp;_i_callback_subtotal_text&nbsp;=&nbsp;i_callback_subtotal_text.<br />
+&nbsp;&nbsp;_i_callback_f4_click&nbsp;=&nbsp;i_callback_f4_click.<br />
+&nbsp;&nbsp;_i_callback_before_save_data&nbsp;=&nbsp;i_callback_before_save_data.<br />
+&nbsp;&nbsp;_i_callback_save_data&nbsp;=&nbsp;i_callback_save_data.<br />
+&nbsp;&nbsp;_i_callback_data_changed&nbsp;=&nbsp;i_callback_data_changed.<br />
+&nbsp;&nbsp;_i_callback_data_changed_fnsh&nbsp;=&nbsp;i_callback_data_changed_fnsh.<br />
+&nbsp;&nbsp;_i_callback_drop_list&nbsp;=&nbsp;i_callback_drop_list.<br />
+&nbsp;&nbsp;IF&nbsp;alv_edit_mode&nbsp;&gt;=&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;g_alv_edit_mode&nbsp;=&nbsp;alv_edit_mode.<br />
+&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;CLEAR:gt_exclude,g_allow_blank_field,gs_layout,gt_sort,t_f4.<br />
+&nbsp;&nbsp;gt_exclude&nbsp;=&nbsp;t_exclude[].<br />
+&nbsp;&nbsp;g_allow_blank_field&nbsp;=&nbsp;t_allow_blank_field[].<br />
+&nbsp;&nbsp;gs_layout&nbsp;=&nbsp;alv_layout.<br />
+&nbsp;&nbsp;gt_sort&nbsp;=&nbsp;t_sort[].<br />
+<br />
+&nbsp;&nbsp;APPEND&nbsp;LINES&nbsp;OF&nbsp;t_f4&nbsp;&nbsp;TO&nbsp;g_lt_f4.<br />
+&nbsp;&nbsp;"初始化数据<br />
+&nbsp;&nbsp;PERFORM&nbsp;init_gen.<br />
+&nbsp;&nbsp;"调用屏幕显示ALV<br />
+&nbsp;&nbsp;CALL&nbsp;SCREEN&nbsp;500.<br />
+<br />
+<br />
+<br />
+<br />
+ENDFUNCTION.<br />
+<br />
+<br />
+   </div>
+   <div class="codeComment">
+*Messages<br />
+*---------------------------<br />
+*<br />
+* Message class: Hard coded<br />
+*   保存数据成功!<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

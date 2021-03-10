@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>ZSQLEXPLORERF05</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: ZSQLEXPLORERF05</h2>
+<h3> Description: ZSQLEXPLORERF05</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;&nbsp;Include&nbsp;&nbsp;ZSQLEXPLORERF05<br />
+*&---------------------------------------------------------------------*<br />
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Get_Data_In_Dynamic_Program<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM get_data_in_dynamic_prog USING  p_sql      TYPE  tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;string<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_element&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_element.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;it_code&nbsp;&nbsp;&nbsp;TYPE&nbsp;tt_code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prog&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;LENGTH&nbsp;8&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;LENGTH&nbsp;120,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;LENGTH&nbsp;3&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wrd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;LENGTH&nbsp;10&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;off&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;LENGTH&nbsp;3&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_msg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_stcurt&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;&nbsp;create_dynamic_program_code&nbsp;USING&nbsp;p_sql<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_element<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_type<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;it_code&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;GENERATE&nbsp;SUBROUTINE&nbsp;POOL&nbsp;it_code&nbsp;NAME&nbsp;prog<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE&nbsp;msg<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LINE&nbsp;lin<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WORD&nbsp;wrd<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OFFSET&nbsp;off.<br />
+&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;&lt;&gt;&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;l_msg&nbsp;&nbsp;=&nbsp;&nbsp;msg&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;append_error_message&nbsp;USING&nbsp;4&nbsp;l_msg&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;download_table_to_local&nbsp;TABLES&nbsp;it_code[]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'c:\11.txt'.<br />
+&nbsp;&nbsp;ELSE&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Get&nbsp;The&nbsp;Dynamic&nbsp;Structure<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;get_structure&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(prog)&nbsp;CHANGING&nbsp;p_stcurt&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;p_stcurt-&gt;*&nbsp;TO&nbsp;&lt;table&gt;&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Get&nbsp;Data&nbsp;With&nbsp;SQL<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;get_data&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(prog)&nbsp;USING&nbsp;&nbsp;&lt;table&gt;&nbsp;.<br />
+&nbsp;&nbsp;ENDIF&nbsp;.<br />
+ENDFORM .                    "Get_Data_In_Dynamic_Prog<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Create_Dynamic_Program_Code<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM  create_dynamic_program_code USING  p_sql     TYPE  tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_element&nbsp;TYPE&nbsp;&nbsp;tt_element<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_type&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;string<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&nbsp;p_code&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_code&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;it_temp&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_code&nbsp;.<br />
+&nbsp;&nbsp;CLEAR&nbsp;:&nbsp;p_code[]&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Create&nbsp;The&nbsp;Start&nbsp;Of&nbsp;The&nbsp;Dynamic&nbsp;Program<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;PERFORM&nbsp;&nbsp;define_program_01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;p_element<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;it_temp&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;LINES&nbsp;OF&nbsp;it_temp&nbsp;TO&nbsp;p_code&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Create&nbsp;The&nbsp;First&nbsp;Function<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;PERFORM&nbsp;&nbsp;define_program_02&nbsp;&nbsp;CHANGING&nbsp;it_temp&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;LINES&nbsp;OF&nbsp;it_temp&nbsp;TO&nbsp;p_code&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Create&nbsp;The&nbsp;Get&nbsp;Data&nbsp;Function<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;PERFORM&nbsp;&nbsp;define_program_03&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;p_sql<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_type<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;it_temp&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;LINES&nbsp;OF&nbsp;it_temp&nbsp;TO&nbsp;p_code&nbsp;.<br />
+ENDFORM .                    "Create_Dynamic_Program<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Define_Program_01<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM  define_program_01 USING  p_element TYPE  tt_element<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&nbsp;p_code&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_code&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;wa_element&nbsp;&nbsp;TYPE&nbsp;&nbsp;st_element&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_line&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;LINE&nbsp;OF&nbsp;tt_code,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;string&nbsp;.<br />
+&nbsp;&nbsp;CLEAR&nbsp;:&nbsp;p_code[]&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'PROGRAM&nbsp;SUBPOOL.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'TYPES:Begin&nbsp;OF&nbsp;ST_DATA,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;p_element&nbsp;INTO&nbsp;wa_element&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;wa_element-display&nbsp;CS&nbsp;c_count&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONCATENATE&nbsp;wa_element-alias&nbsp;'&nbsp;'&nbsp;'TYPE'&nbsp;'&nbsp;'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'i,'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;wa_line<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SEPARATED&nbsp;BY&nbsp;space&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ELSE&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONCATENATE&nbsp;wa_element-source&nbsp;'-'&nbsp;wa_element-name<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;l_text&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONCATENATE&nbsp;wa_element-alias&nbsp;'&nbsp;'&nbsp;'LIKE'&nbsp;'&nbsp;'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_text&nbsp;','<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;wa_line<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SEPARATED&nbsp;BY&nbsp;space&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_line&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;ENDLOOP&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End&nbsp;&nbsp;&nbsp;OF&nbsp;ST_DATA.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'TYPES:&nbsp;TT_DATA&nbsp;&nbsp;TYPE&nbsp;STANDARD&nbsp;TABLE&nbsp;OF&nbsp;ST_DATA.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+ENDFORM .                    "Define_Program_01<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Define_Program_02<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM  define_program_02  CHANGING  p_code  TYPE  tt_code    .<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;wa_element&nbsp;&nbsp;TYPE&nbsp;&nbsp;st_element&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_line&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;LINE&nbsp;OF&nbsp;tt_code&nbsp;.<br />
+&nbsp;&nbsp;CLEAR&nbsp;:&nbsp;p_code[]&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'FORM&nbsp;get_structure&nbsp;Changing&nbsp;p_struct&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data&nbsp;.&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;p_struct&nbsp;TYPE&nbsp;TT_DATA.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'ENDFORM&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+ENDFORM .                    "Define_Program_02<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Define_Program_03<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM  define_program_03     USING  p_sql   TYPE  tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_type&nbsp;&nbsp;TYPE&nbsp;&nbsp;string<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&nbsp;p_code&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_code&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;wa_text&nbsp;TYPE&nbsp;st_text&nbsp;&nbsp;&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_first&nbsp;TYPE&nbsp;i&nbsp;&nbsp;VALUE&nbsp;0&nbsp;.<br />
+&nbsp;&nbsp;CLEAR&nbsp;:&nbsp;p_code[]&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'FORM&nbsp;GET_DATA&nbsp;USING&nbsp;P_DATA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;ANY&nbsp;TABLE&nbsp;.&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;DATA&nbsp;:&nbsp;IT_DATA&nbsp;TYPE&nbsp;TT_DATA&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;DATA&nbsp;:&nbsp;WA_DATA&nbsp;TYPE&nbsp;ST_DATA&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;p_sql&nbsp;INTO&nbsp;wa_text&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;wa_text&nbsp;=&nbsp;'FROM'&nbsp;AND&nbsp;l_first&nbsp;=&nbsp;0&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;p_type&nbsp;=&nbsp;&nbsp;c_single&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_text&nbsp;=&nbsp;'INTO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WA_DATA&nbsp;FROM'&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ELSE&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_text&nbsp;=&nbsp;'INTO&nbsp;CORRESPONDING&nbsp;FIELDS&nbsp;OF&nbsp;TABLE&nbsp;IT_DATA&nbsp;FROM'&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_first&nbsp;&nbsp;=&nbsp;&nbsp;1&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;SHIFT&nbsp;wa_text-line&nbsp;BY&nbsp;1&nbsp;PLACES&nbsp;RIGHT&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_text&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;ENDLOOP&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;IF&nbsp;p_type&nbsp;=&nbsp;&nbsp;c_single&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;APPEND&nbsp;WA_DATA&nbsp;TO&nbsp;IT_DATA.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;ENDIF&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;P_DATA&nbsp;=&nbsp;IT_DATA[].&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+&nbsp;&nbsp;APPEND&nbsp;'ENDFORM.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&nbsp;TO&nbsp;p_code&nbsp;.<br />
+ENDFORM .                    "Define_Program_03<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

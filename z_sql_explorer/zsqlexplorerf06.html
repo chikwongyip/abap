@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>ZSQLEXPLORERF06</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: ZSQLEXPLORERF06</h2>
+<h3> Description: ZSQLEXPLORERF06</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;&nbsp;Include&nbsp;&nbsp;ZSQLEXPLORERF06<br />
+*&---------------------------------------------------------------------*<br />
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Get_Data_In_Dynamic_SQL<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM get_data_in_dynamic_sql USING p_text    TYPE  tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_type&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;string<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_fields&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_element<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_select&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_where&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_group&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_have&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_order&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text&nbsp;.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;p_all&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;i&nbsp;&nbsp;VALUE&nbsp;1&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_text&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;st_text&nbsp;&nbsp;&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_table&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;REF&nbsp;TO&nbsp;data,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_line&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;REF&nbsp;TO&nbsp;data,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_to&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_length&nbsp;&nbsp;TYPE&nbsp;&nbsp;i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Get&nbsp;Field&nbsp;Statement<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;l_length&nbsp;=&nbsp;6&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;set_blank&nbsp;USING&nbsp;l_length<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_select&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Get&nbsp;Table&nbsp;Statement<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;l_length&nbsp;=&nbsp;6&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;set_blank&nbsp;USING&nbsp;l_length<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_on&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Get&nbsp;Where&nbsp;Statement<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;l_length&nbsp;=&nbsp;6&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;set_blank&nbsp;USING&nbsp;l_length<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_where&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Get&nbsp;Group&nbsp;Statement<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;l_length&nbsp;=&nbsp;9&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;set_blank&nbsp;USING&nbsp;l_length<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_group.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Get&nbsp;Have&nbsp;&nbsp;Statement<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;l_length&nbsp;=&nbsp;6&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;set_blank&nbsp;USING&nbsp;l_length<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_have.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Get&nbsp;Order&nbsp;Statement<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;l_length&nbsp;=&nbsp;9&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;set_blank&nbsp;USING&nbsp;l_length<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_order.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Get&nbsp;Dynamic&nbsp;Structure<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;PERFORM&nbsp;get_structure&nbsp;USING&nbsp;p_fields<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_table&nbsp;.<br />
+&nbsp;&nbsp;CHECK&nbsp;g_exception[]&nbsp;IS&nbsp;INITIAL&nbsp;.<br />
+&nbsp;&nbsp;ASSIGN&nbsp;p_table-&gt;*&nbsp;TO&nbsp;&lt;table&gt;&nbsp;.<br />
+&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;p_line&nbsp;LIKE&nbsp;LINE&nbsp;OF&nbsp;&lt;table&gt;.<br />
+&nbsp;&nbsp;ASSIGN&nbsp;p_line-&gt;*&nbsp;TO&nbsp;&lt;line&gt;&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Check&nbsp;SQL&nbsp;Type<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;PERFORM&nbsp;get_data&nbsp;USING&nbsp;&nbsp;p_select&nbsp;&nbsp;p_on<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_where&nbsp;&nbsp;&nbsp;p_group<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_have&nbsp;&nbsp;&nbsp;&nbsp;p_order<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_type<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&nbsp;&lt;table&gt;&nbsp;&nbsp;&nbsp;&lt;line&gt;.<br />
+ENDFORM .                    "Get_Data_in_dynamic_SQL<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Get_Structure<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM get_structure USING  p_fields  TYPE tt_element<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&nbsp;p_ref&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data&nbsp;.<br />
+&nbsp;&nbsp;DATA:&nbsp;wa_component&nbsp;&nbsp;TYPE&nbsp;&nbsp;abap_componentdescr,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_component&nbsp;&nbsp;TYPE&nbsp;&nbsp;abap_component_tab,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_strucdescr&nbsp;TYPE&nbsp;&nbsp;REF&nbsp;TO&nbsp;cl_abap_structdescr,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_tabledescr&nbsp;TYPE&nbsp;&nbsp;REF&nbsp;TO&nbsp;cl_abap_tabledescr,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_field&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;st_element,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_oref&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;REF&nbsp;TO&nbsp;cx_root&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_str&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;string,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_msg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;string.<br />
+&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;p_fields&nbsp;INTO&nbsp;wa_field&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CLEAR&nbsp;:&nbsp;&nbsp;wa_component&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;wa_component-name&nbsp;&nbsp;=&nbsp;&nbsp;wa_field-alias&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;&nbsp;wa_field-display(6)&nbsp;=&nbsp;c_count1&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONCATENATE&nbsp;'LVC_S_FCAT'&nbsp;'-'&nbsp;&nbsp;'ROW_POS'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;l_str&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ELSE&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONCATENATE&nbsp;wa_field-source&nbsp;'-'&nbsp;wa_field-name<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;l_str&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;case_to_upper&nbsp;CHANGING&nbsp;l_str&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;case_to_upper&nbsp;CHANGING&nbsp;wa_component-name&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;TRY.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_component-type&nbsp;?=&nbsp;cl_abap_typedescr=&gt;describe_by_name(&nbsp;l_str&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INSERT&nbsp;wa_component&nbsp;INTO&nbsp;TABLE&nbsp;it_component.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CATCH&nbsp;cx_root&nbsp;INTO&nbsp;l_oref.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_msg&nbsp;&nbsp;=&nbsp;l_oref-&gt;get_text(&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;append_error_message&nbsp;USING&nbsp;4&nbsp;l_msg&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEANUP.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEAR&nbsp;l_oref.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDTRY&nbsp;.<br />
+&nbsp;&nbsp;ENDLOOP&nbsp;.<br />
+&nbsp;&nbsp;CHECK&nbsp;g_exception[]&nbsp;IS&nbsp;INITIAL&nbsp;.<br />
+&nbsp;&nbsp;TRY.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;it_component&nbsp;IS&nbsp;NOT&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_strucdescr&nbsp;=&nbsp;cl_abap_structdescr=&gt;create(&nbsp;it_component&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_tabledescr&nbsp;=&nbsp;cl_abap_tabledescr=&gt;create(&nbsp;p_line_type&nbsp;=&nbsp;wa_strucdescr&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;p_ref&nbsp;TYPE&nbsp;HANDLE&nbsp;it_tabledescr.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CATCH&nbsp;cx_root&nbsp;INTO&nbsp;l_oref.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_msg&nbsp;&nbsp;=&nbsp;l_oref-&gt;get_text(&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;append_error_message&nbsp;USING&nbsp;4&nbsp;l_msg&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CLEANUP.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEAR&nbsp;l_oref.<br />
+&nbsp;&nbsp;ENDTRY&nbsp;.<br />
+ENDFORM .                    "get_structure<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Get_Data<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM get_data USING  p_field  TYPE  tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_table&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_where&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_group&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_have&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_order&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_type&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;string<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&nbsp;p_data&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;STANDARD&nbsp;TABLE<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_line&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;any&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;l_oref&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cx_root&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_text&nbsp;&nbsp;TYPE&nbsp;st_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_msg&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;TRY.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CASE&nbsp;p_type&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;c_single&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;SINGLE&nbsp;(p_field)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;p_line<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FROM&nbsp;(p_table)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE&nbsp;(p_where)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GROUP&nbsp;BY&nbsp;(p_group)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HAVING&nbsp;(p_have).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;p_line&nbsp;TO&nbsp;p_data&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;c_distinct&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;DISTINCT&nbsp;(p_field)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;TABLE&nbsp;p_data<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FROM&nbsp;(p_table)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE&nbsp;(p_where)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GROUP&nbsp;BY&nbsp;(p_group)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HAVING&nbsp;(p_have)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ORDER&nbsp;BY&nbsp;(p_order)&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;OTHERS&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;(p_field)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;TABLE&nbsp;p_data<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FROM&nbsp;(p_table)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHERE&nbsp;(p_where)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GROUP&nbsp;BY&nbsp;(p_group)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HAVING&nbsp;(p_have)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ORDER&nbsp;BY&nbsp;(p_order)&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDCASE&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CATCH&nbsp;cx_root&nbsp;INTO&nbsp;l_oref.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_msg&nbsp;&nbsp;=&nbsp;l_oref-&gt;get_text(&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;append_error_message&nbsp;USING&nbsp;4&nbsp;l_msg&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CLEANUP.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEAR&nbsp;l_oref.<br />
+&nbsp;&nbsp;ENDTRY&nbsp;.<br />
+ENDFORM .                    "Get_Data<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Get_Field_Statement<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM get_field_statement     USING p_element  TYPE tt_element<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_field&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;tt_text&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;wa_element&nbsp;TYPE&nbsp;&nbsp;st_element&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_field&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;st_text&nbsp;&nbsp;&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_temp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;string&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;p_element&nbsp;INTO&nbsp;wa_element&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;wa_field-line&nbsp;&nbsp;=&nbsp;wa_element-display&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_field&nbsp;TO&nbsp;p_field&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;ENDLOOP&nbsp;.<br />
+ENDFORM .                    "Get_Field_Statement<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Set_Blank<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM set_blank      USING l_length  TYPE  i<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_text&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;wa_text&nbsp;&nbsp;TYPE&nbsp;&nbsp;st_text&nbsp;.<br />
+&nbsp;&nbsp;CHECK&nbsp;p_text&nbsp;IS&nbsp;NOT&nbsp;INITIAL&nbsp;.<br />
+&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;p_text&nbsp;INTO&nbsp;wa_text&nbsp;INDEX&nbsp;1&nbsp;.<br />
+&nbsp;&nbsp;wa_text-line(l_length)&nbsp;=&nbsp;''&nbsp;.<br />
+&nbsp;&nbsp;SHIFT&nbsp;wa_text-line&nbsp;BY&nbsp;l_length&nbsp;PLACES&nbsp;RIGHT&nbsp;.<br />
+&nbsp;&nbsp;MODIFY&nbsp;p_text&nbsp;FROM&nbsp;wa_text&nbsp;INDEX&nbsp;1&nbsp;.<br />
+ENDFORM .                    "Set_Blank<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

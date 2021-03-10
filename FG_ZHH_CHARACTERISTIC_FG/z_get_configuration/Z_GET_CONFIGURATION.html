@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>Z_GET_CONFIGURATION</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for function Z_GET_CONFIGURATION</h2>
+<h3> Description: Get CONFIGURATION</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="code">
+FUNCTION Z_GET_CONFIGURATION.<br />
+   </div>
+   <div class="codeComment">
+*"----------------------------------------------------------------------<br />
+*"*"Local Interface:<br />
+*"----------------------------------------------------------------------<br />
+*  TYPES: BEGIN OF t_cfg_code,<br />
+*         sign(1),<br />
+*         option(2),<br />
+*         low  TYPE atnam,<br />
+*         high TYPE atnam,<br />
+*       END OF t_cfg_code,<br />
+*       its_cfg_code TYPE TABLE OF t_cfg_code.<br />
+*<br />
+*  DATA: itab_code TYPE its_cfg_code,<br />
+*        wa_code   TYPE t_cfg_code.<br />
+*<br />
+*<br />
+*  DATA: wa_cuobj TYPE ztke_cuobj.     "配置<br />
+*  DATA: wa_config TYPE ztke_config_1. "输出表工作区<br />
+*  DATA: BEGIN OF wa_ibin,<br />
+*           instance TYPE ib_instance,<br />
+*           atinn TYPE atinn,<br />
+*           atwrt TYPE atwrt,<br />
+*           atflv TYPE atflv,<br />
+*           atnam TYPE atnam,<br />
+*           msehi TYPE msehi,<br />
+*           atfor TYPE atfor,<br />
+*        END OF wa_ibin,<br />
+*        itab_ibin LIKE TABLE OF wa_ibin.<br />
+*<br />
+*  DATA: BEGIN OF wa_cawn,<br />
+*          atinn TYPE atinn,<br />
+*          atwrt TYPE atwrt,<br />
+*          atwtb TYPE atwtb,<br />
+*        END OF wa_cawn,<br />
+*        itab_cawn LIKE TABLE OF wa_cawn.<br />
+*<br />
+*  DATA: lv_value TYPE string.<br />
+*<br />
+*  预处理特性名称<br />
+*  LOOP AT itab_config INTO wa_config.<br />
+*    wa_code-sign = 'I'.<br />
+*    wa_code-option = 'EQ'.<br />
+*    wa_code-low = wa_config-atnam.<br />
+*    APPEND wa_code TO itab_code.<br />
+*  ENDLOOP.<br />
+*  CLEAR: itab_config, itab_config[].<br />
+*<br />
+*  SELECT  a~instance                    " cuobj<br />
+*          b~atinn                       " 配置号<br />
+*          b~atwrt                       " 文本特性值<br />
+*          b~atflv                       " 数字特性值<br />
+*          c~atnam                       " 配置代码<br />
+*          c~msehi                       " 单位值<br />
+*          c~atfor<br />
+*    INTO CORRESPONDING FIELDS OF TABLE itab_ibin<br />
+*      FROM v_ibinr AS a<br />
+*      INNER JOIN v_ibin_syval AS b ON a~in_recno = b~in_recno       " 记录编号<br />
+*      INNER JOIN cabn AS c ON b~atinn = c~atinn<br />
+*      FOR ALL ENTRIES IN itab_cuobj<br />
+*      WHERE a~instance = itab_cuobj-cuobj<br />
+*      AND   c~atnam IN itab_code<br />
+*      AND   a~valto IN ( SELECT MAX( valto ) AS valto<br />
+*                           FROM v_ibinr<br />
+*                           WHERE instance = a~instance ). "考虑有效期<br />
+*      .         " 有效日期<br />
+*<br />
+*  SELECT cawn~atinn<br />
+*         cawn~atwrt<br />
+*         cawnt~atwtb<br />
+*    INTO CORRESPONDING FIELDS OF TABLE itab_cawn<br />
+*      FROM cawn<br />
+*      INNER JOIN cawnt ON cawn~atinn = cawnt~atinn    " 配置号<br />
+*                      AND cawn~atzhl = cawnt~atzhl    " 特性号<br />
+*      FOR ALL ENTRIES IN itab_ibin<br />
+*      WHERE cawn~atinn = itab_ibin-atinn " 配置号<br />
+*        AND cawn~atwrt = itab_ibin-atwrt " 文本特性值<br />
+*        AND cawnt~spras = '1'.<br />
+*<br />
+*  LOOP AT itab_ibin INTO wa_ibin.<br />
+*    READ TABLE itab_cawn INTO wa_cawn WITH KEY atinn = wa_ibin-atinn<br />
+*                                               atwrt = wa_ibin-atwrt.<br />
+*    IF sy-subrc &lt;&gt; 0.<br />
+*      CLEAR wa_cawn.<br />
+*    ENDIF.<br />
+*    CLEAR wa_config.<br />
+*    CASE wa_ibin-atfor.<br />
+*      WHEN 'CHAR'.                               "字符类型<br />
+*        wa_config-value = wa_ibin-atwrt.<br />
+*        wa_config-val_desc = wa_cawn-atwtb.<br />
+*<br />
+*      WHEN 'NUM'.                                "数字类型<br />
+*        CALL FUNCTION 'FLTP_CHAR_CONVERSION'<br />
+*            EXPORTING<br />
+*              input = wa_ibin-atflv<br />
+*            IMPORTING<br />
+*              flstr = wa_config-value.<br />
+*              lv_value = wa_config-value.<br />
+*<br />
+*        CALL FUNCTION 'Z_DELE_FLOT_RIGHT_ZERO'<br />
+*            CHANGING<br />
+*               value = lv_value.<br />
+*<br />
+*      CONCATENATE lv_value  wa_ibin-msehi INTO wa_config-val_desc SEPARATED BY space.<br />
+*    ENDCASE.<br />
+*    wa_config-atnam = wa_ibin-atnam.<br />
+*    wa_config-atinn = wa_ibin-atinn.<br />
+*    wa_config-cuobj = wa_ibin-instance.<br />
+*    APPEND wa_config TO itab_config.<br />
+*  ENDLOOP.<br />
+<br />
+<br />
+<br />
+<br />
+
+<div class="codeComment">*       <a href ="global-z_get_configuration.html">Global data declarations</a></div><br />
+   </div>
+   <div class="code">
+ENDFUNCTION.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>GET_URL_NO_AUTHOR_CHECK</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: GET_URL_NO_AUTHOR_CHECK</h2>
+<h3> Description: Get ftp file type</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="codeComment">
+**************************************************************************<br />
+*&nbsp;&nbsp;&nbsp;Method&nbsp;attributes.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*<br />
+**************************************************************************<br />
+   </div>
+   <div class="code">
+Instantiation: Public<br />
+   </div>
+   <div class="codeComment">
+**************************************************************************<br />
+<br />
+   </div>
+   <div class="code">
+METHOD GET_URL_NO_AUTHOR_CHECK.<br />
+&nbsp;&nbsp;DATA:&nbsp;BEGIN&nbsp;OF&nbsp;file,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dirname(75)&nbsp;TYPE&nbsp;c,&nbsp;"&nbsp;name&nbsp;of&nbsp;directory.&nbsp;(possibly&nbsp;truncated.)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name(75)&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c,&nbsp;"&nbsp;name&nbsp;of&nbsp;entry.&nbsp;(possibly&nbsp;truncated.)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type(10)&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c,&nbsp;"&nbsp;type&nbsp;of&nbsp;entry.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;len(8)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;p,&nbsp;"&nbsp;length&nbsp;in&nbsp;bytes.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;owner(8)&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c,&nbsp;"&nbsp;owner&nbsp;of&nbsp;the&nbsp;entry.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mtime(6)&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;p,&nbsp;"&nbsp;last&nbsp;modification&nbsp;date,&nbsp;seconds&nbsp;since&nbsp;1970<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mode(9)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c,&nbsp;"&nbsp;like&nbsp;"rwx-r-x--x":&nbsp;protection&nbsp;mode.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errno(3)&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errmsg(40)&nbsp;&nbsp;TYPE&nbsp;c,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;END&nbsp;OF&nbsp;file.<br />
+&nbsp;&nbsp;DATA:wa_dir&nbsp;TYPE&nbsp;epsfili.<br />
+&nbsp;&nbsp;DATA:GC_1000&nbsp;TYPE&nbsp;i&nbsp;value&nbsp;1000.<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;&nbsp;&nbsp;获取目录列表<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;确保所有在读取已关闭<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;CALL&nbsp;'C_DIR_READ_FINISH'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRNO'&nbsp;&nbsp;FIELD&nbsp;file-errno<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRMSG'&nbsp;FIELD&nbsp;file-errmsg.<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;&nbsp;&nbsp;开始读取<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;CALL&nbsp;'C_DIR_READ_START'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'DIR'&nbsp;&nbsp;&nbsp;&nbsp;FIELD&nbsp;dir_name<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'FILE'&nbsp;&nbsp;&nbsp;FIELD&nbsp;file_mask<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRNO'&nbsp;&nbsp;FIELD&nbsp;file-errno<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRMSG'&nbsp;FIELD&nbsp;file-errmsg.<br />
+&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;&lt;&gt;&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;RAISE&nbsp;read_directory_failed.<br />
+&nbsp;&nbsp;ENDIF.<br />
+<br />
+&nbsp;&nbsp;CLEAR&nbsp;file_counter.<br />
+&nbsp;&nbsp;CLEAR&nbsp;error_counter.<br />
+<br />
+&nbsp;&nbsp;DO.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CLEAR&nbsp;file.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CLEAR&nbsp;wa_dir.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;'C_DIR_READ_NEXT'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'TYPE'&nbsp;&nbsp;&nbsp;FIELD&nbsp;file-type<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'NAME'&nbsp;&nbsp;&nbsp;FIELD&nbsp;file-name<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'LEN'&nbsp;&nbsp;&nbsp;&nbsp;FIELD&nbsp;file-len<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'OWNER'&nbsp;&nbsp;FIELD&nbsp;file-owner<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'MTIME'&nbsp;&nbsp;FIELD&nbsp;file-mtime<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'MODE'&nbsp;&nbsp;&nbsp;FIELD&nbsp;file-mode<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRNO'&nbsp;&nbsp;FIELD&nbsp;file-errno<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRMSG'&nbsp;FIELD&nbsp;file-errmsg.<br />
+<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;&nbsp;handle&nbsp;files&nbsp;&gt;&nbsp;2147483647&nbsp;byte&nbsp;(int&nbsp;4)&nbsp;-&nbsp;hen&nbsp;9.9.2004<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;file-len&nbsp;&gt;&nbsp;2147483647.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_dir-size&nbsp;&nbsp;=&nbsp;-99.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_dir-size&nbsp;&nbsp;=&nbsp;file-len.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;wa_dir-name&nbsp;=&nbsp;file-name.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;=&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;file-type(1)&nbsp;=&nbsp;'f'&nbsp;OR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;regular&nbsp;file<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file-type(1)&nbsp;=&nbsp;'F'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ADD&nbsp;1&nbsp;TO&nbsp;file_counter.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_dir-rc&nbsp;&nbsp;&nbsp;=&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_dir&nbsp;TO&nbsp;dir_list.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ELSEIF&nbsp;sy-subrc&nbsp;=&nbsp;1.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXIT.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;error_counter&nbsp;&gt;&nbsp;gc_1000.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;'C_DIR_READ_FINISH'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRNO'&nbsp;&nbsp;FIELD&nbsp;file-errno<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRMSG'&nbsp;FIELD&nbsp;file-errmsg.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RAISE&nbsp;too_many_read_errors.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ADD&nbsp;1&nbsp;TO&nbsp;error_counter.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_dir-rc&nbsp;&nbsp;=&nbsp;18.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_dir&nbsp;TO&nbsp;dir_list.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;ENDDO.<br />
+<br />
+&nbsp;&nbsp;CALL&nbsp;'C_DIR_READ_FINISH'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRNO'&nbsp;&nbsp;FIELD&nbsp;file-errno<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;'ERRMSG'&nbsp;FIELD&nbsp;file-errmsg.<br />
+<br />
+&nbsp;&nbsp;IF&nbsp;file_counter&nbsp;&gt;&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;SORT&nbsp;dir_list&nbsp;BY&nbsp;name&nbsp;ASCENDING.<br />
+&nbsp;&nbsp;ENDIF.<br />
+ENDMETHOD.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>ZSQLEXPLORERTOP</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: ZSQLEXPLORERTOP</h2>
+<h3> Description:  ZSQLEXPLORERTOP</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;&nbsp;Include&nbsp;&nbsp;ZSQLEXPLORERTOP<br />
+*&---------------------------------------------------------------------*<br />
+******************************************************<br />
+*&nbsp;To&nbsp;Constants<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+CONSTANTS :<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c_100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;rs37a-fnum&nbsp;&nbsp;VALUE&nbsp;'100'&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c_200&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;rs37a-fnum&nbsp;&nbsp;VALUE&nbsp;'200'&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&nbsp;To&nbsp;Define&nbsp;Varant<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+DATA :<br />
+&nbsp;&nbsp;&nbsp;it_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;tt_text,<br />
+&nbsp;&nbsp;&nbsp;g_editor&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_gui_textedit,<br />
+&nbsp;&nbsp;&nbsp;g_editor1&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_gui_textedit,<br />
+&nbsp;&nbsp;&nbsp;g_grid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_gui_alv_grid,<br />
+&nbsp;&nbsp;&nbsp;g_splitter&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_gui_easy_splitter_container,<br />
+&nbsp;&nbsp;&nbsp;g_splitter1&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_gui_easy_splitter_container,<br />
+&nbsp;&nbsp;&nbsp;g_container&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_gui_custom_container,<br />
+&nbsp;&nbsp;&nbsp;g_exception&nbsp;TYPE&nbsp;tt_exception,<br />
+&nbsp;&nbsp;&nbsp;g_ucomm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;sy-ucomm,<br />
+&nbsp;&nbsp;&nbsp;g_repid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;sy-repid,<br />
+&nbsp;&nbsp;&nbsp;g_file&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;LENGTH&nbsp;50,<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Configuration&nbsp;Parameters<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;l_case_01&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;&nbsp;VALUE&nbsp;''&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;l_case_02&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;&nbsp;VALUE&nbsp;''&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;l_case_03&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;&nbsp;VALUE&nbsp;'X'&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;g_case&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;i&nbsp;&nbsp;VALUE&nbsp;3&nbsp;&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;l_label_01&nbsp;&nbsp;TYPE&nbsp;c&nbsp;&nbsp;VALUE&nbsp;'X'&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;l_label_02&nbsp;&nbsp;TYPE&nbsp;c&nbsp;&nbsp;VALUE&nbsp;''&nbsp;&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;g_label&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;i&nbsp;&nbsp;VALUE&nbsp;1&nbsp;&nbsp;&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;ALV&nbsp;Data&nbsp;Must&nbsp;Be&nbsp;A&nbsp;Global&nbsp;Variant<br />
+   </div>
+   <div class="code">
+FIELD-SYMBOLS:  &lt;table&gt;  TYPE ANY TABLE,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;line&gt;&nbsp;&nbsp;&nbsp;TYPE&nbsp;ANY.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Necessary&nbsp;To&nbsp;Flush&nbsp;The&nbsp;Automation&nbsp;Queue<br />
+   </div>
+   <div class="code">
+CLASS cl_gui_cfw DEFINITION LOAD.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

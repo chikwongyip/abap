@@ -1,0 +1,705 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>LZHH_ALV_HANDLE_FGTOP</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: LZHH_ALV_HANDLE_FGTOP</h2>
+<h3> Description: Z_CREATE_ALV</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="code">
+FUNCTION-POOL ZHH_ALV_HANDLE_FG.            "MESSAGE-ID ..<br />
+<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;INCLUDE&nbsp;LZHH_ALV_HANDLE_FGD...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;Local&nbsp;class&nbsp;definition.<br />
+<br />
+*&nbsp;INCLUDE&nbsp;LZHH_ALV_HANDLE_FGD...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;Local&nbsp;class&nbsp;definition<br />
+   </div>
+   <div class="code">
+DATA:_i_callback_mod_field_cat TYPE STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_select_data&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_verify_input&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_user_command&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_hotspot_click&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_double_click&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_subtotal_text&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_f4_click&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_before_save_data&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_save_data&nbsp;TYPE&nbsp;string,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_data_changed&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_data_changed_fnsh&nbsp;TYPE&nbsp;STRING,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_add_t_fieldcat&nbsp;TYPE&nbsp;lvc_t_fcat,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_t_exclude&nbsp;TYPE&nbsp;ui_functions,&nbsp;"button<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_t_allow_blank_field&nbsp;TYPE&nbsp;table&nbsp;of&nbsp;lvc_fname,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_alv_layout&nbsp;TYPE&nbsp;lvc_s_layo,&nbsp;"layout&nbsp;调整<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_i_callback_drop_list&nbsp;TYPE&nbsp;STRING&nbsp;.<br />
+<br />
+"TABLES: ztke_cdpos, ztke_cdhdr.<br />
+DATA: gt_exclude type ui_functions.<br />
+DATA: gt_fieldcat TYPE lvc_t_fcat.<br />
+DATA: gt_drp      TYPE lvc_t_drop.<br />
+DATA: gt_sort TYPE lvc_t_sort.<br />
+DATA: gs_layout TYPE lvc_s_layo.<br />
+DATA: g_alv_title TYPE SYTITLE.<br />
+DATA: g_status_name TYPE STRING.<br />
+DATA: IS_VARIANT TYPE DISVARIANT.<br />
+DATA: g_alv_edit_mode TYPE I VALUE 1.<br />
+DATA: g_alv_structdescr TYPE REF TO cl_abap_structdescr, "For save alv data<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_db_tab_name&nbsp;&nbsp;TYPE&nbsp;dd02l-tabname.<br />
+DATA: wa_out_dyn TYPE REF TO data,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itab_out_dyn&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itab_out_dyn_old&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data.<br />
+FIELD-SYMBOLS: &lt;field_dyn&gt;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;wa_out_dyn&gt;&nbsp;&nbsp;&nbsp;TYPE&nbsp;ANY,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;itab_out_dyn_old&gt;&nbsp;TYPE&nbsp;table,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;itab_out_dyn&gt;&nbsp;TYPE&nbsp;table.<br />
+DATA:BEGIN OF status_ex_tab OCCURS 0,<br />
+&nbsp;&nbsp;fcode&nbsp;&nbsp;&nbsp;LIKE&nbsp;sy-ucomm,<br />
+END OF status_ex_tab.<br />
+DATA: g_allow_blank_field TYPE TABLE OF LVC_FNAME.<br />
+DATA: ok_code LIKE sy-ucomm,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;save_ok&nbsp;LIKE&nbsp;sy-ucomm,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_grid&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_gui_alv_grid.<br />
+DATA: g_container TYPE scrfname VALUE 'BCALV_GRID_0100_CONT1'.<br />
+DATA: g_custom_container TYPE REF TO cl_gui_custom_container.<br />
+DATA: g_alv_max_width TYPE C VALUE space.<br />
+   </div>
+   <div class="codeComment">
+*ALV&nbsp;处理时的事件类<br />
+   </div>
+   <div class="code">
+CLASS lcl_event_receiver DEFINITION DEFERRED.<br />
+DATA: g_event_receiver TYPE REF TO lcl_event_receiver.<br />
+DATA : g_lt_f4 TYPE lvc_t_f4 WITH HEADER LINE.<br />
+   </div>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class&nbsp;LCL_EVENT_RECEIVER<br />
+*&---------------------------------------------------------------------*<br />
+   </div>
+   <div class="code">
+CLASS LCL_EVENT_RECEIVER DEFINITION.<br />
+&nbsp;&nbsp;PUBLIC&nbsp;SECTION.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"当ALV表内容被修改过后，将修改了的值同步到内表<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS:&nbsp;handle_data_changed&nbsp;FOR&nbsp;EVENT&nbsp;data_changed&nbsp;OF&nbsp;cl_gui_alv_grid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING&nbsp;er_data_changed<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4_before<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4_after<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_ucomm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS:&nbsp;handle_data_changed_fnsh&nbsp;FOR&nbsp;EVENT&nbsp;data_changed_finished&nbsp;OF&nbsp;cl_gui_alv_grid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING&nbsp;&nbsp;e_modified<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_good_cells.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS&nbsp;:&nbsp;handle_hotspot_click&nbsp;FOR&nbsp;EVENT&nbsp;hotspot_click&nbsp;OF&nbsp;cl_gui_alv_grid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING&nbsp;e_row_id<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_column_id<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;es_row_no.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS&nbsp;:&nbsp;handle_double_click&nbsp;FOR&nbsp;EVENT&nbsp;double_click&nbsp;OF&nbsp;cl_gui_alv_grid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING&nbsp;e_row<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_column<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;es_row_no.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS&nbsp;:&nbsp;handle_subtotal_text&nbsp;FOR&nbsp;EVENT&nbsp;subtotal_text&nbsp;OF&nbsp;cl_gui_alv_grid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING&nbsp;es_subtottxt_info<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ep_subtot_line<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_event_data.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS&nbsp;:&nbsp;handle_user_command&nbsp;FOR&nbsp;EVENT&nbsp;user_command&nbsp;OF&nbsp;cl_gui_alv_grid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING&nbsp;e_ucomm.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS:&nbsp;handle_on_f4&nbsp;for&nbsp;event&nbsp;onf4&nbsp;of&nbsp;cl_gui_alv_grid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING&nbsp;e_fieldname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;es_row_no<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_fieldvalue<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;er_event_data&nbsp;"&nbsp;marked&nbsp;by&nbsp;sam&nbsp;20170105<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS:&nbsp;refresh_delta_tables.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS:&nbsp;set_table_is_initial.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS:&nbsp;set_table_is_not_initial.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;METHODS:&nbsp;table_is_initial&nbsp;RETURNING&nbsp;VALUE(initial)&nbsp;TYPE&nbsp;char01.<br />
+&nbsp;&nbsp;PRIVATE&nbsp;SECTION.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"This&nbsp;flag&nbsp;is&nbsp;set&nbsp;IF&nbsp;any&nbsp;error&nbsp;occured&nbsp;in&nbsp;one&nbsp;of&nbsp;the&nbsp;following&nbsp;METHODS:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:&nbsp;error_in_data&nbsp;TYPE&nbsp;c.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"This&nbsp;flag&nbsp;signals&nbsp;that&nbsp;no&nbsp;records&nbsp;were&nbsp;read&nbsp;for&nbsp;the&nbsp;flight&nbsp;table&nbsp;initially:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:&nbsp;initial_table&nbsp;TYPE&nbsp;c.<br />
+ENDCLASS.               "LCL_EVENT_RECEIVER<br />
+   </div>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class&nbsp;(Implementation)&nbsp;&nbsp;lcl_event_receiver<br />
+*&---------------------------------------------------------------------*<br />
+   </div>
+   <div class="code">
+CLASS lcl_event_receiver IMPLEMENTATION.<br />
+&nbsp;&nbsp;METHOD&nbsp;:&nbsp;handle_hotspot_click.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;(_i_callback_hotspot_click)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;&lt;itab_out_dyn&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;e_row_id<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_column_id<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;es_row_no<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND.<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;:&nbsp;handle_double_click.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;(_i_callback_double_click)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;&lt;itab_out_dyn&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;e_row<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_column<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;es_row_no<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND.<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;:&nbsp;handle_subtotal_text.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;(_i_callback_subtotal_text)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;es_subtottxt_info<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ep_subtot_line<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_event_data<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND.<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;:&nbsp;handle_user_command.<br />
+<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;handle_data_changed_fnsh.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;(_i_callback_data_changed_fnsh)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;&lt;itab_out_dyn&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;itab_out_dyn_old&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;e_modified<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_good_cells<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND.<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;handle_data_changed.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:&nbsp;ls_good&nbsp;TYPE&nbsp;lvc_s_modi.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;er_data_changed-&gt;mt_good_cells&nbsp;INTO&nbsp;ls_good.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;verify_input_data_gen&nbsp;USING&nbsp;ls_good<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;er_data_changed<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4_before<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4_after<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_ucomm.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;(_i_callback_data_changed)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;&lt;itab_out_dyn&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;itab_out_dyn_old&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;er_data_changed<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4_before<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4_after<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_ucomm<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND.<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;refresh_delta_tables.<br />
+<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;set_table_is_initial.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;initial_table&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;set_table_is_not_initial.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;initial_table&nbsp;=&nbsp;space.<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;table_is_initial.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;initial_table&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initial&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initial&nbsp;=&nbsp;space.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+&nbsp;&nbsp;METHOD&nbsp;handle_on_f4.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;(_i_callback_f4_click)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;&lt;itab_out_dyn&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;itab_out_dyn_old&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;e_fieldname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;es_row_no<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_fieldvalue<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;er_event_data<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_grid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND.<br />
+&nbsp;&nbsp;ENDMETHOD.<br />
+ENDCLASS.               "lcl_event_receiver<br />
+   </div>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;CREATE_AND_INIT_ALV<br />
+*&---------------------------------------------------------------------*<br />
+   </div>
+   <div class="code">
+FORM create_and_init_alv.<br />
+<br />
+&nbsp;&nbsp;IF&nbsp;g_grid&nbsp;IS&nbsp;NOT&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;g_grid-&gt;free.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WAIT&nbsp;UP&nbsp;TO&nbsp;1&nbsp;SECONDS&nbsp;.<br />
+&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;IF&nbsp;g_alv_max_width&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;OBJECT&nbsp;g_grid&nbsp;EXPORTING&nbsp;i_parent&nbsp;=&nbsp;cl_gui_custom_container=&gt;screen0.<br />
+&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;g_custom_container&nbsp;IS&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;OBJECT&nbsp;g_custom_container&nbsp;EXPORTING&nbsp;container_name&nbsp;=&nbsp;g_container.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;OBJECT&nbsp;g_grid&nbsp;EXPORTING&nbsp;i_parent&nbsp;=&nbsp;g_custom_container.<br />
+&nbsp;&nbsp;ENDIF.<br />
+<br />
+<br />
+<br />
+&nbsp;&nbsp;PERFORM&nbsp;select_data_gen.<br />
+&nbsp;&nbsp;DATA:&nbsp;lv_variant&nbsp;TYPE&nbsp;disvariant.<br />
+&nbsp;&nbsp;lv_variant-report&nbsp;=&nbsp;sy-cprog.<br />
+&nbsp;&nbsp;lv_variant-username&nbsp;=&nbsp;sy-uname.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;_i_callback_drop_list&nbsp;IS&nbsp;NOT&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;(_i_callback_drop_list)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;&nbsp;&nbsp;gt_drp<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;g_grid-&gt;set_drop_down_table&nbsp;EXPORTING&nbsp;it_drop_down&nbsp;=&nbsp;gt_drp.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+<br />
+<br />
+&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;g_grid-&gt;set_table_for_first_display<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING&nbsp;it_toolbar_excluding&nbsp;&nbsp;=&nbsp;gt_exclude<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_layout&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gs_layout<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_variant&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;lv_variant<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_save&nbsp;=&nbsp;'A'&nbsp;&nbsp;"U<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&nbsp;it_fieldcatalog&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gt_fieldcat<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_sort&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;gt_sort<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_outtab&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&lt;itab_out_dyn&gt;.<br />
+<br />
+&nbsp;&nbsp;CREATE&nbsp;OBJECT&nbsp;g_event_receiver.<br />
+&nbsp;&nbsp;SET&nbsp;HANDLER&nbsp;g_event_receiver-&gt;handle_user_command&nbsp;FOR&nbsp;g_grid.<br />
+&nbsp;&nbsp;SET&nbsp;HANDLER&nbsp;g_event_receiver-&gt;handle_data_changed_fnsh&nbsp;FOR&nbsp;g_grid.<br />
+&nbsp;&nbsp;SET&nbsp;HANDLER&nbsp;g_event_receiver-&gt;handle_subtotal_text&nbsp;FOR&nbsp;g_grid.<br />
+&nbsp;&nbsp;SET&nbsp;HANDLER&nbsp;g_event_receiver-&gt;handle_hotspot_click&nbsp;FOR&nbsp;g_grid.<br />
+&nbsp;&nbsp;SET&nbsp;HANDLER&nbsp;g_event_receiver-&gt;handle_double_click&nbsp;FOR&nbsp;g_grid.<br />
+&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;g_grid-&gt;register_f4_for_fields&nbsp;EXPORTING&nbsp;it_f4&nbsp;&nbsp;=&nbsp;g_lt_f4[].<br />
+&nbsp;&nbsp;SET&nbsp;HANDLER&nbsp;g_event_receiver-&gt;handle_on_f4&nbsp;FOR&nbsp;g_grid.<br />
+&nbsp;&nbsp;SET&nbsp;HANDLER&nbsp;g_event_receiver-&gt;handle_data_changed&nbsp;FOR&nbsp;g_grid.<br />
+&nbsp;&nbsp;"CALL&nbsp;METHOD&nbsp;g_grid-&gt;register_edit_event&nbsp;EXPORTING&nbsp;i_event_id&nbsp;=&nbsp;cl_gui_alv_grid=&gt;mc_evt_enter.<br />
+&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;g_grid-&gt;register_edit_event&nbsp;EXPORTING&nbsp;i_event_id&nbsp;=&nbsp;cl_gui_alv_grid=&gt;mc_evt_modified.<br />
+&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;g_grid-&gt;set_ready_for_input&nbsp;EXPORTING&nbsp;i_ready_for_input&nbsp;=&nbsp;g_alv_edit_mode.&nbsp;&nbsp;"1&nbsp;可编辑状态，&nbsp;0&nbsp;不可编辑<br />
+&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;g_grid-&gt;set_frontend_layout&nbsp;EXPORTING&nbsp;is_layout&nbsp;=&nbsp;gs_layout.<br />
+&nbsp;&nbsp;"CALL&nbsp;METHOD&nbsp;g_grid-&gt;refresh_table_display.<br />
+ENDFORM.                               "CREATE_AND_INIT_ALV<br />
+<br />
+   </div>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;select_data_gen<br />
+*&---------------------------------------------------------------------*<br />
+   </div>
+   <div class="code">
+FORM select_data_gen.<br />
+&nbsp;&nbsp;CLEAR:&nbsp;&lt;itab_out_dyn&gt;.<br />
+&nbsp;&nbsp;IF&nbsp;g_db_tab_name&nbsp;&lt;&gt;&nbsp;space.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;SELECT&nbsp;*&nbsp;INTO&nbsp;CORRESPONDING&nbsp;FIELDS&nbsp;OF&nbsp;TABLE&nbsp;&lt;itab_out_dyn&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FROM&nbsp;(g_db_tab_name).<br />
+&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;IF&nbsp;_i_callback_select_data&nbsp;IS&nbsp;NOT&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;(_i_callback_select_data)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;&lt;itab_out_dyn&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND.<br />
+&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;CLEAR:&nbsp;&lt;itab_out_dyn_old&gt;.<br />
+&nbsp;&nbsp;APPEND&nbsp;LINES&nbsp;OF&nbsp;&lt;itab_out_dyn&gt;&nbsp;TO&nbsp;&lt;itab_out_dyn_old&gt;.<br />
+&nbsp;&nbsp;IF&nbsp;&lt;itab_out_dyn&gt;&nbsp;IS&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE&nbsp;text-001&nbsp;TYPE&nbsp;'S'.<br />
+&nbsp;&nbsp;ENDIF.<br />
+ENDFORM.                    " select_data_gen<br />
+FORM modify_row USING p_tabname TYPE tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_wa"&nbsp;TYPE&nbsp;t_customer_out.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;DATA:&nbsp;lv_tabname&nbsp;TYPE&nbsp;tabname.<br />
+&nbsp;&nbsp;lv_tabname&nbsp;=&nbsp;p_tabname.<br />
+&nbsp;&nbsp;TRANSLATE&nbsp;lv_tabname&nbsp;TO&nbsp;UPPER&nbsp;CASE.<br />
+&nbsp;&nbsp;DATA:&nbsp;wa_old_dyn&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data.<br />
+&nbsp;&nbsp;FIELD-SYMBOLS:&nbsp;&lt;wa_old_dyn&gt;&nbsp;TYPE&nbsp;ANY.<br />
+&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;wa_old_dyn&nbsp;TYPE&nbsp;(lv_tabname).<br />
+&nbsp;&nbsp;ASSIGN&nbsp;wa_old_dyn-&gt;*&nbsp;TO&nbsp;&lt;wa_old_dyn&gt;.<br />
+&nbsp;&nbsp;DATA:&nbsp;wa_new_dyn&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data.<br />
+&nbsp;&nbsp;FIELD-SYMBOLS:&nbsp;&lt;wa_new_dyn&gt;&nbsp;TYPE&nbsp;ANY.<br />
+&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;wa_new_dyn&nbsp;TYPE&nbsp;(lv_tabname).<br />
+&nbsp;&nbsp;ASSIGN&nbsp;wa_new_dyn-&gt;*&nbsp;TO&nbsp;&lt;wa_new_dyn&gt;.<br />
+&nbsp;&nbsp;MOVE-CORRESPONDING&nbsp;p_wa&nbsp;TO&nbsp;&lt;wa_new_dyn&gt;.<br />
+&nbsp;&nbsp;MOVE-CORRESPONDING&nbsp;p_wa&nbsp;TO&nbsp;&lt;wa_old_dyn&gt;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;get_row&nbsp;USING&nbsp;p_tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&lt;wa_old_dyn&gt;.<br />
+&nbsp;&nbsp;IF&nbsp;&lt;wa_old_dyn&gt;&nbsp;IS&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;INSERT&nbsp;(p_tabname)&nbsp;FROM&nbsp;&lt;wa_new_dyn&gt;.<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;log&nbsp;USING&nbsp;p_tabname<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;wa_new_dyn&gt;<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;space<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'I'.<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;UPDATE&nbsp;(p_tabname)&nbsp;FROM&nbsp;&lt;wa_new_dyn&gt;.<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;log&nbsp;USING&nbsp;p_tabname<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;wa_new_dyn&gt;<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;wa_old_dyn&gt;<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'U'.<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;ENDIF.<br />
+ENDFORM.<br />
+FORM delete_row USING p_tabname TYPE tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_wa.<br />
+&nbsp;&nbsp;DATA:&nbsp;lv_tabname&nbsp;TYPE&nbsp;tabname.<br />
+&nbsp;&nbsp;lv_tabname&nbsp;=&nbsp;p_tabname.<br />
+&nbsp;&nbsp;TRANSLATE&nbsp;lv_tabname&nbsp;TO&nbsp;UPPER&nbsp;CASE.<br />
+&nbsp;&nbsp;DATA:&nbsp;wa_del_dyn&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;data.<br />
+&nbsp;&nbsp;FIELD-SYMBOLS:&nbsp;&lt;wa_del_dyn&gt;&nbsp;TYPE&nbsp;ANY.<br />
+&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;wa_del_dyn&nbsp;TYPE&nbsp;(lv_tabname).<br />
+&nbsp;&nbsp;ASSIGN&nbsp;wa_del_dyn-&gt;*&nbsp;TO&nbsp;&lt;wa_del_dyn&gt;.<br />
+&nbsp;&nbsp;MOVE-CORRESPONDING&nbsp;p_wa&nbsp;TO&nbsp;&lt;wa_del_dyn&gt;.<br />
+&nbsp;&nbsp;DATA:&nbsp;lv_where&nbsp;TYPE&nbsp;STRING.<br />
+&nbsp;&nbsp;PERFORM&nbsp;crt_pri_key_where&nbsp;USING&nbsp;p_tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_wa<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;lv_where.<br />
+&nbsp;&nbsp;DELETE&nbsp;FROM&nbsp;(p_tabname)&nbsp;WHERE&nbsp;(lv_where).<br />
+   </div>
+   <div class="codeComment">
+*&nbsp;&nbsp;PERFORM&nbsp;log&nbsp;USING&nbsp;p_tabname<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;wa_del_dyn&gt;<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;space<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'D'.<br />
+   </div>
+   <div class="code">
+ENDFORM.<br />
+FORM get_row USING p_tabname TYPE tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_wa.<br />
+&nbsp;&nbsp;DATA:&nbsp;lv_where&nbsp;TYPE&nbsp;STRING.<br />
+&nbsp;&nbsp;PERFORM&nbsp;crt_pri_key_where&nbsp;USING&nbsp;p_tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_wa<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;lv_where.<br />
+&nbsp;&nbsp;CLEAR:&nbsp;p_wa.<br />
+&nbsp;&nbsp;SELECT&nbsp;SINGLE&nbsp;*&nbsp;INTO&nbsp;p_wa&nbsp;FROM&nbsp;(p_tabname)&nbsp;WHERE&nbsp;(lv_where).<br />
+ENDFORM.<br />
+FORM crt_pri_key_where USING p_tabname TYPE tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_wa<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;p_where&nbsp;TYPE&nbsp;STRING.<br />
+&nbsp;&nbsp;DATA:&nbsp;lv_tabname&nbsp;TYPE&nbsp;tabname.<br />
+&nbsp;&nbsp;lv_tabname&nbsp;=&nbsp;p_tabname.<br />
+&nbsp;&nbsp;TRANSLATE&nbsp;lv_tabname&nbsp;TO&nbsp;UPPER&nbsp;CASE.<br />
+&nbsp;&nbsp;FIELD-SYMBOLS:&nbsp;&lt;value&gt;&nbsp;TYPE&nbsp;any.<br />
+&nbsp;&nbsp;DATA:&nbsp;itab_dfies&nbsp;TYPE&nbsp;TABLE&nbsp;OF&nbsp;dfies,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_dfies&nbsp;TYPE&nbsp;dfies.<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'GET_KEY_FIELDS_OF_TABLE'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING&nbsp;tabname&nbsp;=&nbsp;lv_tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;key_fieldtab&nbsp;=&nbsp;itab_dfies.<br />
+&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;itab_dfies&nbsp;INTO&nbsp;wa_dfies.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;p_where&nbsp;IS&nbsp;NOT&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONCATENATE&nbsp;p_where&nbsp;'&nbsp;AND&nbsp;'&nbsp;INTO&nbsp;p_where&nbsp;RESPECTING&nbsp;BLANKS.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"通过字字段的名称，获取结构的值<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;COMPONENT&nbsp;wa_dfies-fieldname&nbsp;OF&nbsp;STRUCTURE&nbsp;p_wa&nbsp;TO&nbsp;&lt;value&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CONCATENATE&nbsp;p_where&nbsp;wa_dfies-fieldname&nbsp;'&nbsp;=&nbsp;'''&nbsp;&lt;value&gt;&nbsp;''''<br />
+&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;p_where.<br />
+&nbsp;&nbsp;ENDLOOP.<br />
+ENDFORM.<br />
+FORM crt_pri_key_wa_value TABLES itab_dfies STRUCTURE dfies<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;p_tabname&nbsp;TYPE&nbsp;tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_wa<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&nbsp;p_wa_where<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;DATA:&nbsp;lv_tabname&nbsp;TYPE&nbsp;tabname.<br />
+&nbsp;&nbsp;lv_tabname&nbsp;=&nbsp;p_tabname.<br />
+&nbsp;&nbsp;TRANSLATE&nbsp;lv_tabname&nbsp;TO&nbsp;UPPER&nbsp;CASE.<br />
+&nbsp;&nbsp;FIELD-SYMBOLS:&nbsp;&lt;value&gt;&nbsp;TYPE&nbsp;any,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;key_field_value&gt;&nbsp;TYPE&nbsp;any.<br />
+&nbsp;&nbsp;DATA:&nbsp;"itab_dfies&nbsp;TYPE&nbsp;TABLE&nbsp;OF&nbsp;dfies,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_dfies&nbsp;TYPE&nbsp;dfies.<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'GET_KEY_FIELDS_OF_TABLE'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING&nbsp;tabname&nbsp;=&nbsp;lv_tabname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;key_fieldtab&nbsp;=&nbsp;itab_dfies.<br />
+&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;itab_dfies&nbsp;INTO&nbsp;wa_dfies.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"通过字字段的名称，获取结构的值<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;COMPONENT&nbsp;wa_dfies-fieldname&nbsp;OF&nbsp;STRUCTURE&nbsp;p_wa&nbsp;TO&nbsp;&lt;value&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;COMPONENT&nbsp;wa_dfies-fieldname&nbsp;OF&nbsp;STRUCTURE&nbsp;p_wa_where&nbsp;TO&nbsp;&lt;key_field_value&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;key_field_value&gt;&nbsp;=&nbsp;&lt;value&gt;.<br />
+&nbsp;&nbsp;ENDLOOP.<br />
+ENDFORM.<br />
+   </div>
+   <div class="codeComment">
+*FORM&nbsp;log&nbsp;USING&nbsp;p_tabname&nbsp;TYPE&nbsp;tabname<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_wa<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_wa_old<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_chngind&nbsp;TYPE&nbsp;cdchngind.<br />
+*&nbsp;&nbsp;"组装查询条件<br />
+*&nbsp;&nbsp;TRANSLATE&nbsp;p_tabname&nbsp;TO&nbsp;UPPER&nbsp;CASE.<br />
+*&nbsp;&nbsp;DATA:&nbsp;itab_dfies&nbsp;TYPE&nbsp;TABLE&nbsp;OF&nbsp;dfies,<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_dfies&nbsp;TYPE&nbsp;dfies.<br />
+*&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'GET_KEY_FIELDS_OF_TABLE'<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING&nbsp;tabname&nbsp;=&nbsp;p_tabname<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;key_fieldtab&nbsp;=&nbsp;itab_dfies.<br />
+*&nbsp;&nbsp;DATA:&nbsp;gs_component&nbsp;&nbsp;TYPE&nbsp;abap_compdescr,<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;go_sdescr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_abap_structdescr.<br />
+*&nbsp;&nbsp;FIELD-SYMBOLS:&nbsp;&lt;value&gt;&nbsp;TYPE&nbsp;any.<br />
+*&nbsp;&nbsp;go_sdescr&nbsp;?=&nbsp;cl_abap_tabledescr=&gt;describe_by_name(&nbsp;p_tabname&nbsp;).<br />
+*&nbsp;&nbsp;DATA:&nbsp;wa_cdhdr&nbsp;TYPE&nbsp;ztke_cdhdr,<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos&nbsp;TYPE&nbsp;ztke_cdpos,<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itab_cdpos&nbsp;LIKE&nbsp;TABLE&nbsp;OF&nbsp;&nbsp;wa_cdpos.<br />
+*&nbsp;&nbsp;wa_cdhdr-objectclas&nbsp;=&nbsp;p_tabname.<br />
+*&nbsp;&nbsp;wa_cdhdr-username&nbsp;=&nbsp;sy-uname.<br />
+*&nbsp;&nbsp;wa_cdhdr-udate&nbsp;=&nbsp;sy-datum.<br />
+*&nbsp;&nbsp;wa_cdhdr-utime&nbsp;=&nbsp;sy-uzeit.<br />
+*&nbsp;&nbsp;wa_cdhdr-tcode&nbsp;=&nbsp;sy-tcode.<br />
+*&nbsp;&nbsp;wa_cdhdr-langu&nbsp;=&nbsp;sy-langu.<br />
+*&nbsp;&nbsp;wa_cdhdr-version&nbsp;=&nbsp;'000'.<br />
+*&nbsp;&nbsp;wa_cdhdr-change_ind&nbsp;=&nbsp;p_chngind.<br />
+*&nbsp;&nbsp;IF&nbsp;p_chngind&nbsp;&lt;&gt;&nbsp;'D'.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;go_sdescr-&gt;components&nbsp;INTO&nbsp;gs_component.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;COMPONENT&nbsp;gs_component-name&nbsp;OF&nbsp;STRUCTURE&nbsp;p_wa&nbsp;TO&nbsp;&lt;value&gt;.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;=&nbsp;0.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;itab_dfies&nbsp;INTO&nbsp;wa_dfies&nbsp;WITH&nbsp;KEY&nbsp;fieldname&nbsp;=&nbsp;gs_component-name.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;=&nbsp;0.&nbsp;"如果为主键<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONCATENATE&nbsp;wa_cdhdr-objectid&nbsp;&lt;value&gt;&nbsp;INTO&nbsp;wa_cdhdr-objectid.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-objectclas&nbsp;=&nbsp;p_tabname.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-tabname&nbsp;=&nbsp;p_tabname.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-fname&nbsp;&nbsp;&nbsp;=&nbsp;gs_component-name.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-value_new&nbsp;=&nbsp;&lt;value&gt;.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;p_chngind&nbsp;=&nbsp;'U'.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;COMPONENT&nbsp;wa_cdpos-fname&nbsp;OF&nbsp;STRUCTURE&nbsp;p_wa_old&nbsp;TO&nbsp;&lt;value&gt;.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-value_old&nbsp;=&nbsp;&lt;value&gt;.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;wa_cdpos-value_new&nbsp;&lt;&gt;&nbsp;wa_cdpos-value_old.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_cdpos&nbsp;TO&nbsp;itab_cdpos.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+*&nbsp;&nbsp;ENDIF.<br />
+*&nbsp;&nbsp;SELECT&nbsp;MAX(&nbsp;CHANGENR&nbsp;)&nbsp;INTO&nbsp;wa_cdhdr-changenr&nbsp;FROM&nbsp;ztke_cdhdr&nbsp;WHERE&nbsp;objectclas&nbsp;=&nbsp;p_tabname<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND&nbsp;objectid&nbsp;=&nbsp;wa_cdhdr-objectid.<br />
+*&nbsp;&nbsp;ADD&nbsp;1&nbsp;TO&nbsp;wa_cdhdr-changenr.<br />
+*&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;itab_cdpos&nbsp;INTO&nbsp;wa_cdpos.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-objectid&nbsp;=&nbsp;wa_cdhdr-objectid.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-tabkey&nbsp;=&nbsp;wa_cdhdr-objectid.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-changenr&nbsp;=&nbsp;wa_cdhdr-changenr.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-chngind&nbsp;=&nbsp;p_chngind.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;CASE&nbsp;p_chngind.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'I'.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-value_old&nbsp;=&nbsp;''.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'U'.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_cdpos-chngind&nbsp;=&nbsp;'U'.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'D'.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"do&nbsp;nothing<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;ENDCASE.<br />
+*&nbsp;&nbsp;&nbsp;&nbsp;MODIFY&nbsp;itab_cdpos&nbsp;FROM&nbsp;wa_cdpos.<br />
+*&nbsp;&nbsp;ENDLOOP.<br />
+*&nbsp;&nbsp;INSERT&nbsp;ztke_cdpos&nbsp;FROM&nbsp;TABLE&nbsp;itab_cdpos.<br />
+*&nbsp;&nbsp;INSERT&nbsp;ztke_cdhdr&nbsp;FROM&nbsp;wa_cdhdr.<br />
+*ENDFORM.<br />
+   </div>
+   <div class="code">
+FORM init_gen.<br />
+&nbsp;&nbsp;DATA:&nbsp;itab_keydescr&nbsp;TYPE&nbsp;abap_keydescr_tab,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_keydescr&nbsp;TYPE&nbsp;abap_keydescr.<br />
+&nbsp;&nbsp;DATA:&nbsp;itab_dfies&nbsp;TYPE&nbsp;STANDARD&nbsp;TABLE&nbsp;OF&nbsp;dfies,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_dfies&nbsp;TYPE&nbsp;dfies.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;lv_dyntable_typ&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;&nbsp;cl_abap_tabledescr.<br />
+&nbsp;&nbsp;IF&nbsp;g_db_tab_name&nbsp;IS&nbsp;NOT&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'GET_KEY_FIELDS_OF_TABLE'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING&nbsp;tabname&nbsp;=&nbsp;g_db_tab_name<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;key_fieldtab&nbsp;=&nbsp;itab_dfies.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;itab_dfies&nbsp;INTO&nbsp;wa_dfies.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_keydescr-name&nbsp;=&nbsp;wa_dfies-fieldname.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_keydescr&nbsp;TO&nbsp;itab_keydescr.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;lv_dyntable_typ&nbsp;=&nbsp;cl_abap_tabledescr=&gt;create(&nbsp;p_line_type&nbsp;=&nbsp;g_alv_structdescr<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_key&nbsp;=&nbsp;itab_keydescr&nbsp;).<br />
+&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;lv_dyntable_typ&nbsp;=&nbsp;cl_abap_tabledescr=&gt;create(&nbsp;p_line_type&nbsp;=&nbsp;g_alv_structdescr&nbsp;).<br />
+&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;&nbsp;itab_out_dyn&nbsp;TYPE&nbsp;HANDLE&nbsp;lv_dyntable_typ&nbsp;.<br />
+&nbsp;&nbsp;ASSIGN&nbsp;itab_out_dyn-&gt;*&nbsp;TO&nbsp;&lt;itab_out_dyn&gt;."创建动态内表<br />
+&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;&nbsp;itab_out_dyn_old&nbsp;TYPE&nbsp;HANDLE&nbsp;lv_dyntable_typ.<br />
+&nbsp;&nbsp;ASSIGN&nbsp;itab_out_dyn_old-&gt;*&nbsp;TO&nbsp;&lt;itab_out_dyn_old&gt;."创建动态内表<br />
+&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;wa_out_dyn&nbsp;LIKE&nbsp;LINE&nbsp;OF&nbsp;&lt;itab_out_dyn&gt;."创建动态工作区结构<br />
+&nbsp;&nbsp;ASSIGN&nbsp;wa_out_dyn-&gt;*&nbsp;TO&nbsp;&lt;wa_out_dyn&gt;."创建动态工作区<br />
+&nbsp;&nbsp;"可获取描述的方法<br />
+&nbsp;&nbsp;DATA:&nbsp;lo_columns&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_salv_columns_table,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lo_aggregations&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_salv_aggregations,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lo_salv_table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;REF&nbsp;TO&nbsp;cl_salv_table.<br />
+&nbsp;&nbsp;TRY.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cl_salv_table=&gt;factory(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list_display&nbsp;=&nbsp;abap_false<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r_salv_table&nbsp;=&nbsp;lo_salv_table<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t_table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&lt;itab_out_dyn&gt;[]&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CATCH&nbsp;cx_salv_msg.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"#EC&nbsp;NO_HANDLER<br />
+&nbsp;&nbsp;ENDTRY.<br />
+&nbsp;&nbsp;lo_columns&nbsp;&nbsp;=&nbsp;lo_salv_table-&gt;get_columns(&nbsp;).<br />
+&nbsp;&nbsp;lo_aggregations&nbsp;=&nbsp;lo_salv_table-&gt;get_aggregations(&nbsp;).<br />
+&nbsp;&nbsp;CLEAR:&nbsp;gt_fieldcat.<br />
+&nbsp;&nbsp;gt_fieldcat&nbsp;=&nbsp;cl_salv_controller_metadata=&gt;get_lvc_fieldcatalog(&nbsp;r_columns&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;lo_columns<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r_aggregations&nbsp;=&nbsp;lo_aggregations<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;).<br />
+&nbsp;&nbsp;DELETE&nbsp;gt_fieldcat&nbsp;WHERE&nbsp;datatype&nbsp;=&nbsp;'TTYP'.<br />
+&nbsp;&nbsp;IF&nbsp;_i_callback_mod_field_cat&nbsp;IS&nbsp;NOT&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;(_i_callback_mod_field_cat)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TABLES&nbsp;&nbsp;&nbsp;gt_fieldcat<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;ENDIF.<br />
+<br />
+ENDFORM.<br />
+FORM save_data_gen.<br />
+&nbsp;&nbsp;IF&nbsp;g_db_tab_name&nbsp;&lt;&gt;&nbsp;space.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:&nbsp;lv_f_change&nbsp;TYPE&nbsp;C.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:&nbsp;wa_old&nbsp;LIKE&nbsp;wa_out_dyn,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_new&nbsp;LIKE&nbsp;wa_out_dyn,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_where&nbsp;LIKE&nbsp;wa_out_dyn.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;FIELD-SYMBOLS:&nbsp;&lt;fs_old&gt;&nbsp;TYPE&nbsp;ANY,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;fs_new&gt;&nbsp;TYPE&nbsp;ANY,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;fs_where&gt;&nbsp;TYPE&nbsp;ANY.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;wa_old&nbsp;TYPE&nbsp;HANDLE&nbsp;g_alv_structdescr.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;wa_old-&gt;*&nbsp;TO&nbsp;&lt;fs_old&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;wa_new&nbsp;TYPE&nbsp;HANDLE&nbsp;g_alv_structdescr.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;wa_new-&gt;*&nbsp;TO&nbsp;&lt;fs_new&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CREATE&nbsp;DATA&nbsp;wa_where&nbsp;TYPE&nbsp;HANDLE&nbsp;g_alv_structdescr.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ASSIGN&nbsp;wa_where-&gt;*&nbsp;TO&nbsp;&lt;fs_where&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:&nbsp;itab_dfies&nbsp;TYPE&nbsp;STANDARD&nbsp;TABLE&nbsp;OF&nbsp;dfies,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_dfies&nbsp;TYPE&nbsp;dfies.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:&nbsp;lv_has_eq&nbsp;TYPE&nbsp;STRING.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;&lt;itab_out_dyn_old&gt;&nbsp;ASSIGNING&nbsp;&lt;fs_old&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;crt_pri_key_wa_value&nbsp;TABLES&nbsp;itab_dfies<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;g_db_tab_name<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;fs_old&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&lt;fs_where&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;&lt;itab_out_dyn&gt;&nbsp;FROM&nbsp;&lt;fs_where&gt;&nbsp;ASSIGNING&nbsp;&lt;fs_new&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;&lt;&gt;&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;delete_row&nbsp;USING&nbsp;g_db_tab_name&nbsp;&lt;fs_old&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_f_change&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;&lt;itab_out_dyn&gt;&nbsp;ASSIGNING&nbsp;&lt;fs_new&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;crt_pri_key_wa_value&nbsp;TABLES&nbsp;itab_dfies<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;g_db_tab_name<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;fs_new&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;&lt;fs_where&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;&lt;itab_out_dyn_old&gt;&nbsp;FROM&nbsp;&lt;fs_where&gt;&nbsp;ASSIGNING&nbsp;&lt;fs_old&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;&lt;&gt;&nbsp;0&nbsp;OR&nbsp;&lt;fs_new&gt;&nbsp;&lt;&gt;&nbsp;&lt;fs_old&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;modify_row&nbsp;USING&nbsp;g_db_tab_name&nbsp;&lt;fs_new&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_f_change&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;lv_f_change&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE&nbsp;'保存数据成功!'&nbsp;TYPE&nbsp;'S'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ELSE.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MESSAGE&nbsp;'没有需要保存的数据!'&nbsp;TYPE&nbsp;'S'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;ENDIF.<br />
+ENDFORM.<br />
+<br />
+   </div>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;verify_data&nbsp;校验数据的准确性<br />
+*&---------------------------------------------------------------------*<br />
+   </div>
+   <div class="code">
+FORM verify_input_data_gen USING ps_good type lvc_s_modi<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pr_data_changed&nbsp;type&nbsp;ref&nbsp;to&nbsp;cl_alv_changed_data_protocol<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;CHAR01<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4_before&nbsp;&nbsp;TYPE&nbsp;CHAR01<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_onf4_after&nbsp;&nbsp;&nbsp;TYPE&nbsp;CHAR01<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_ucomm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIKE&nbsp;SY-UCOMM<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;DATA:&nbsp;lv_fname&nbsp;TYPE&nbsp;lvc_fname.<br />
+<br />
+&nbsp;&nbsp;&nbsp;READ&nbsp;TABLE&nbsp;g_allow_blank_field&nbsp;INTO&nbsp;lv_fname&nbsp;WITH&nbsp;KEY&nbsp;table_line&nbsp;=&nbsp;ps_good-fieldname.<br />
+&nbsp;&nbsp;&nbsp;IF&nbsp;sy-subrc&nbsp;&lt;&gt;&nbsp;0.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATA:&nbsp;lv_value&nbsp;TYPE&nbsp;STRING.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;pr_data_changed-&gt;get_cell_value<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING&nbsp;i_row_id&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;ps_good-row_id<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_fieldname&nbsp;=&nbsp;ps_good-fieldname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING&nbsp;e_value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;lv_value.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;lv_value&nbsp;IS&nbsp;INITIAL.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;pr_data_changed-&gt;add_protocol_entry<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_msgid&nbsp;=&nbsp;'0K'&nbsp;i_msgno&nbsp;=&nbsp;'000'&nbsp;&nbsp;i_msgty&nbsp;=&nbsp;'E'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_msgv1&nbsp;=&nbsp;'不能为空值'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_msgv2&nbsp;=&nbsp;''<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_msgv3&nbsp;=&nbsp;''<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_fieldname&nbsp;=&nbsp;ps_good-fieldname<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_row_id&nbsp;=&nbsp;ps_good-row_id.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;&nbsp;&nbsp;ENDIF.<br />
+&nbsp;IF&nbsp;_i_callback_verify_input&nbsp;IS&nbsp;NOT&nbsp;INITIAL.<br />
+&nbsp;PERFORM&nbsp;(_i_callback_verify_input)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;PROGRAM&nbsp;(sy-cprog)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"TABLES&nbsp;&lt;itab_out_dyn&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;ps_good<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pr_data_changed<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;FOUND.<br />
+&nbsp;ENDIF.<br />
+<br />
+ENDFORM.                    " verify_data<br />
+FORM refresh_alv.<br />
+&nbsp;&nbsp;PERFORM&nbsp;create_and_init_alv.<br />
+ENDFORM.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

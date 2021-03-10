@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>Z_GET_PDS_DATA</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for function Z_GET_PDS_DATA</h2>
+<h3> Description: Z_GET_PDS_DATA</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="code">
+FUNCTION Z_GET_PDS_DATA.<br />
+   </div>
+   <div class="codeComment">
+*"----------------------------------------------------------------------<br />
+*"*"Local Interface:<br />
+*"  IMPORTING<br />
+*"     REFERENCE(IR_MATNR) TYPE  PDSMAINT_MATNR_RNG_T<br />
+*"     REFERENCE(IR_WERK) TYPE  PDSMAINT_WERK_RNG_T<br />
+*"     REFERENCE(IR_VERID) TYPE  PDSMAINT_VERID_T<br />
+*"     REFERENCE(IV_PDS) TYPE  BOOLEAN OPTIONAL<br />
+*"     REFERENCE(IV_BOM) TYPE  BOOLEAN OPTIONAL<br />
+*"     REFERENCE(IV_LB) TYPE  BOOLEAN OPTIONAL<br />
+*"     REFERENCE(IV_FEIN) TYPE  BOOLEAN OPTIONAL<br />
+*"     REFERENCE(IV_RATE) TYPE  BOOLEAN OPTIONAL<br />
+*"     REFERENCE(IV_GROB) TYPE  BOOLEAN OPTIONAL<br />
+*"     REFERENCE(IR_LIFNR) TYPE  PDSMAINT_LIFNR_RNG_T OPTIONAL<br />
+*"     REFERENCE(IV_STLAL) TYPE  STLAL OPTIONAL<br />
+*"     REFERENCE(IV_STLAN) TYPE  PDSMAINT_STLAN OPTIONAL<br />
+*"     REFERENCE(IV_ADD) TYPE  BOOLEAN OPTIONAL<br />
+*"     REFERENCE(IV_REP) TYPE  BOOLEAN OPTIONAL<br />
+*"     REFERENCE(PDS_TYPE) TYPE  PDS_TYPE OPTIONAL<br />
+*"----------------------------------------------------------------------<br />
+<br />
+* Tables<br />
+
+<div class="codeComment">*       <a href ="global-z_get_pds_data.html">Global data declarations</a></div><br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;DATA:<br />
+&nbsp;&nbsp;lt_result&nbsp;&nbsp;TYPE&nbsp;pds_result_display_t.<br />
+<br />
+   </div>
+   <div class="codeComment">
+* Variables<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;DATA:<br />
+&nbsp;&nbsp;lv_duplet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;boolean,<br />
+&nbsp;&nbsp;lv_append&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;boolean,<br />
+&nbsp;&nbsp;lv_pds_type_p&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;pdsmaint_plan_type,<br />
+&nbsp;&nbsp;lv_pds_type_s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;pdsmaint_plan_type.<br />
+<br />
+   </div>
+   <div class="codeComment">
+* Field Symbols<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;FIELD-SYMBOLS:<br />
+&nbsp;&nbsp;&lt;ls_stko&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;LINE&nbsp;OF&nbsp;PDSMAINT_STKO_T,<br />
+&nbsp;&nbsp;&lt;ls_eina&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;LINE&nbsp;OF&nbsp;PDSMAINT_EINA_T,<br />
+&nbsp;&nbsp;&lt;ls_eine&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;LINE&nbsp;OF&nbsp;PDSMAINT_EINE_T,<br />
+&nbsp;&nbsp;&lt;ls_mast&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;LINE&nbsp;OF&nbsp;PDSMAINT_MAST_T,<br />
+&nbsp;&nbsp;&lt;ls_mkal&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;LINE&nbsp;OF&nbsp;PDSMAINT_MKAL_T.<br />
+<br />
+&nbsp;&nbsp;DATA:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_use_s&nbsp;TYPE&nbsp;boolean,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_use_p&nbsp;TYPE&nbsp;boolean,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_stko&nbsp;&nbsp;TYPE&nbsp;pdsmaint_stko_t,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_mkal&nbsp;&nbsp;TYPE&nbsp;pdsmaint_mkal_t,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_eine&nbsp;&nbsp;TYPE&nbsp;pdsmaint_eine_t,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_eina&nbsp;&nbsp;TYPE&nbsp;pdsmaint_eina_t,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_pds_key&nbsp;TYPE&nbsp;curto_rto_key_t,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_mast&nbsp;TYPE&nbsp;pdsmaint_mast_t.<br />
+&nbsp;&nbsp;STATICS:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_datef&nbsp;TYPE&nbsp;pdsmaint_datef,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_datet&nbsp;TYPE&nbsp;pdsmaint_datet,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_plv&nbsp;TYPE&nbsp;pdsmaint_plan_type,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_plty&nbsp;TYPE&nbsp;plnty,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_prodv&nbsp;TYPE&nbsp;boolean,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_lines&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;&nbsp;sy-tfill.<br />
+<br />
+&nbsp;&nbsp;IF&nbsp;pds_type&nbsp;IS&nbsp;INITIAL&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;iv_use_s&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;iv_use_p&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;ELSEIF&nbsp;pds_type&nbsp;=&nbsp;'P'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;iv_use_p&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;ELSEIF&nbsp;pds_type&nbsp;=&nbsp;'S'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;iv_use_s&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;ENDIF.<br />
+<br />
+&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;cl_pds_result_select=&gt;get_result_list_all<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ir_matnr&nbsp;=&nbsp;ir_matnr<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ir_werk&nbsp;&nbsp;=&nbsp;ir_werk<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ir_verid&nbsp;=&nbsp;ir_verid<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_pds&nbsp;&nbsp;&nbsp;=&nbsp;'X'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_bom&nbsp;&nbsp;&nbsp;=&nbsp;iv_bom<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_use_s&nbsp;=&nbsp;iv_use_s<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_lb&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_lb<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_fein&nbsp;&nbsp;=&nbsp;'X'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_rate&nbsp;&nbsp;=&nbsp;iv_rate<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_grob&nbsp;&nbsp;=&nbsp;iv_grob<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_use_p&nbsp;=&nbsp;iv_use_p<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ir_lifnr&nbsp;=&nbsp;ir_lifnr<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_stlal&nbsp;=&nbsp;iv_stlal<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_stlan&nbsp;=&nbsp;iv_stlan<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_add&nbsp;&nbsp;&nbsp;=&nbsp;iv_add<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_rep&nbsp;&nbsp;&nbsp;=&nbsp;iv_rep<br />
+&nbsp;&nbsp;&nbsp;IMPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_mast&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_mast<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_stko&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_stko<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_mkal&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_mkal<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_pds_key&nbsp;=&nbsp;et_pds_key<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_eina&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_eina<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;et_eine&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_eine&nbsp;.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;cl_pds_data_handler=&gt;fill_buffer_for_header(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_stko&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_stko<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_mast&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_mast<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_eine&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_eine<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_eina&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_eina<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_prodv&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;lv_prodv<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_plnty&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;lv_plty<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_bom&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_bom<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_lb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_lb<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_rate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_rate<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_fein&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_fein<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_grob&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_grob<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_add&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_add<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_rep&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_rep<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_use_s&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_use_s<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_use_p&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;iv_use_p<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_datef&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;lv_datef<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv_datet&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;lv_datet<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_mkal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;et_mkal<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_pds_key&nbsp;&nbsp;=&nbsp;et_pds_key&nbsp;).<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;iv_use_s&nbsp;=&nbsp;'X'&nbsp;AND&nbsp;iv_use_p&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_pds_type_p&nbsp;=&nbsp;'P'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_pds_type_s&nbsp;=&nbsp;'S'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ELSEIF&nbsp;iv_use_p&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_pds_type_p&nbsp;=&nbsp;'P'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ELSEIF&nbsp;iv_use_s&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lv_pds_type_s&nbsp;=&nbsp;'S'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDIF.<br />
+   </div>
+   <div class="codeComment">
+*     CALL METHOD cl_pds_data_handler=&gt;rl_fill_line<br />
+*      IMPORTING<br />
+*        ev_lines = lv_lines.<br />
+<br />
+<br />
+<br />
+   </div>
+   <div class="code">
+ENDFUNCTION.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

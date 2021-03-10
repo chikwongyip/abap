@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>ZSQLEXPLORERI01</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: ZSQLEXPLORERI01</h2>
+<h3> Description: ZSQLEXPLORERI01</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="codeComment">
+*&---------------------------------------------------------------------*<br />
+*&&nbsp;&nbsp;Include&nbsp;&nbsp;ZSQLEXPLORERI01<br />
+*&---------------------------------------------------------------------*<br />
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Module&nbsp;&nbsp;USER_COMMAND_0100&nbsp;&nbsp;INPUT<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+MODULE user_command_0100 INPUT.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;l_start&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;i&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_end&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;i&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it_temp&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;tt_text&nbsp;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_number&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;i&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Initial&nbsp;Serval&nbsp;Global&nbsp;Variant<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;CLEAR&nbsp;:&nbsp;g_exception,&nbsp;l_number&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Keep&nbsp;Start&nbsp;Time<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;GET&nbsp;RUN&nbsp;TIME&nbsp;FIELD&nbsp;l_start.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Processing&nbsp;User&nbsp;Command<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;CASE&nbsp;g_ucomm.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'EXIT'&nbsp;OR&nbsp;'BACK'&nbsp;OR&nbsp;'BREAK'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;exit_program.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'EXEC'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;save_text_to_table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;g_editor<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;it_text.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;execute_sql&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;it_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;l_number.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'FORM'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;save_text_to_table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;g_editor<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;it_text.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;format_sql&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;it_text.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'BUDG'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;save_text_to_table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;g_editor<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;it_text.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;bud_sturcture&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;it_text<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;it_temp&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;set_text_as_r3table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;g_editor1<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;it_temp&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'SAVE'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IF&nbsp;g_file&nbsp;IS&nbsp;INITIAL&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;get_filename&nbsp;CHANGING&nbsp;g_file&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ENDIF&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHECK&nbsp;g_file&nbsp;IS&nbsp;NOT&nbsp;INITIAL&nbsp;AND&nbsp;sy-subrc&nbsp;=&nbsp;0&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;save_as_local_file&nbsp;USING&nbsp;g_editor<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g_file&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'MOVE'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PERFORM&nbsp;move_splitter_postion&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;g_splitter&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;WHEN&nbsp;'CONF'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;SCREEN&nbsp;c_200&nbsp;STARTING&nbsp;AT&nbsp;30&nbsp;5&nbsp;.<br />
+&nbsp;&nbsp;ENDCASE.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Set&nbsp;Runtime<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;GET&nbsp;RUN&nbsp;TIME&nbsp;FIELD&nbsp;l_end.<br />
+&nbsp;&nbsp;PERFORM&nbsp;set_runtime_and_lines&nbsp;USING&nbsp;l_start<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_end<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_number.<br />
+&nbsp;&nbsp;CLEAR&nbsp;:&nbsp;g_ucomm&nbsp;.<br />
+ENDMODULE.                 " USER_COMMAND_0100  INPUT<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;EXIT_PROGRAM<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM exit_program.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Free&nbsp;All&nbsp;Memory&nbsp;Located&nbsp;By&nbsp;Objects<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;PERFORM&nbsp;destroy_alv_object&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;g_grid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;destroy_editor_object&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;g_editor&nbsp;&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;destroy_editor_object&nbsp;&nbsp;&nbsp;&nbsp;CHANGING&nbsp;g_editor1&nbsp;&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;destroy_splitter_object&nbsp;&nbsp;CHANGING&nbsp;g_splitter&nbsp;&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;destroy_splitter_object&nbsp;&nbsp;CHANGING&nbsp;g_splitter1&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;destroy_container_object&nbsp;CHANGING&nbsp;g_container&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Finally&nbsp;Flush<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;CALL&nbsp;METHOD&nbsp;cl_gui_cfw=&gt;flush<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXCEPTIONS<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OTHERS&nbsp;=&nbsp;1.<br />
+&nbsp;&nbsp;LEAVE&nbsp;PROGRAM.<br />
+ENDFORM.                               " EXIT_PROGRAM<br />
+   </div>
+   <div class="codeComment">
+******************************************************<br />
+*&&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;&nbsp;Set_Runtime<br />
+******************************************************<br />
+   </div>
+   <div class="code">
+FORM set_runtime_and_lines USING  p_start  TYPE  i<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_end&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;i<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p_number&nbsp;TYPE&nbsp;&nbsp;i&nbsp;.<br />
+&nbsp;&nbsp;DATA&nbsp;:&nbsp;&nbsp;&nbsp;l_temp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;string,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_status&nbsp;&nbsp;&nbsp;TYPE&nbsp;c&nbsp;&nbsp;&nbsp;LENGTH&nbsp;100,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_spend&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;p&nbsp;LENGTH&nbsp;12&nbsp;DECIMALS&nbsp;3&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Set&nbsp;Runtime<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;l_spend&nbsp;&nbsp;=&nbsp;(&nbsp;p_end&nbsp;&nbsp;-&nbsp;p_start&nbsp;)&nbsp;/&nbsp;1000000&nbsp;.<br />
+&nbsp;&nbsp;l_temp&nbsp;=&nbsp;l_spend&nbsp;.<br />
+&nbsp;&nbsp;CONCATENATE&nbsp;'&nbsp;Runtime&nbsp;:'&nbsp;l_temp&nbsp;'Seconds'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;l_status<br />
+&nbsp;&nbsp;&nbsp;&nbsp;SEPARATED&nbsp;BY&nbsp;space&nbsp;.<br />
+   </div>
+   <div class="codeComment">
+*&&nbsp;Set&nbsp;The&nbsp;Number&nbsp;Of&nbsp;The&nbsp;Total&nbsp;Records<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;l_temp&nbsp;=&nbsp;l_number&nbsp;.<br />
+&nbsp;&nbsp;CONCATENATE&nbsp;l_status&nbsp;',&nbsp;Total&nbsp;Records&nbsp;:'&nbsp;l_temp<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTO&nbsp;l_status<br />
+&nbsp;&nbsp;&nbsp;&nbsp;SEPARATED&nbsp;BY&nbsp;space&nbsp;.<br />
+&nbsp;&nbsp;PERFORM&nbsp;set_status_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USING&nbsp;g_editor<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l_status&nbsp;.<br />
+ENDFORM .                    "Set_Runtime<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

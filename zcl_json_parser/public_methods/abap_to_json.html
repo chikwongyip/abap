@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>ABAP_TO_JSON</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for: ABAP_TO_JSON</h2>
+<h3> Description: </h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="codeComment">
+**************************************************************************<br />
+*&nbsp;&nbsp;&nbsp;Method&nbsp;attributes.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*<br />
+**************************************************************************<br />
+   </div>
+   <div class="code">
+Instantiation: Public<br />
+   </div>
+   <div class="codeComment">
+**************************************************************************<br />
+<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;method&nbsp;ABAP_TO_JSON.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;data(_stack)&nbsp;=&nbsp;stack.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;name_bucket&nbsp;type&nbsp;string.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;number_convert&nbsp;type&nbsp;float.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;oref&nbsp;type&nbsp;ref&nbsp;to&nbsp;object.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;json_res&nbsp;type&nbsp;ref&nbsp;to&nbsp;zcl_json_value.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;json_obj_cast&nbsp;type&nbsp;ref&nbsp;to&nbsp;zcl_json_object.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;json_arr_cast&nbsp;type&nbsp;ref&nbsp;to&nbsp;zcl_json_array.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;field-symbols&nbsp;&lt;table&gt;&nbsp;type&nbsp;any&nbsp;table.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;field-symbols&nbsp;&lt;oattr&gt;&nbsp;type&nbsp;any.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:ls_stack&nbsp;TYPE&nbsp;zobject_stru.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;data(type_descr)&nbsp;=&nbsp;cast&nbsp;cl_abap_typedescr(&nbsp;cl_abap_typedescr=&gt;describe_by_data(&nbsp;data&nbsp;)&nbsp;).<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;Boolean&nbsp;types<br />
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_char&nbsp;and<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;absolute_name&nbsp;=&nbsp;'\TYPE-POOL=ABAP\TYPE=ABAP_BOOL'&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;boolean_cast&nbsp;type&nbsp;abap_bool.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boolean_cast&nbsp;=&nbsp;data.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returning&nbsp;=&nbsp;new&nbsp;zcl_json_boolean(&nbsp;boolean_cast&nbsp;).<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;Numbers<br />
+&nbsp;&nbsp;&nbsp;&nbsp;elseif&nbsp;(&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_int&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_int1&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_int2&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_int8&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_decfloat&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_decfloat16&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_decfloat34&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_float&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_int&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_int1&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_int2&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_int8&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_num&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_numeric&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_packed&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returning&nbsp;=&nbsp;new&nbsp;zcl_json_number(&nbsp;conv&nbsp;float(&nbsp;data&nbsp;)&nbsp;).<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;elseif&nbsp;(&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_hex&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_xstring&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_xsequence&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returning&nbsp;=&nbsp;new&nbsp;zcl_json_string(&nbsp;'#'&nbsp;&&&nbsp;conv&nbsp;string(&nbsp;data&nbsp;)&nbsp;).<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;Text&nbsp;(Date&nbsp;fields&nbsp;are&nbsp;text)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;elseif&nbsp;(&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_char&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_csequence&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_string&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_date&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_time&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data(string_cast)&nbsp;=&nbsp;conv&nbsp;string(&nbsp;data&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;replace&nbsp;all&nbsp;occurrences&nbsp;of&nbsp;'\'&nbsp;in&nbsp;string_cast&nbsp;with&nbsp;'\\'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;replace&nbsp;all&nbsp;occurrences&nbsp;of&nbsp;'"'&nbsp;in&nbsp;string_cast&nbsp;with&nbsp;'\"'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returning&nbsp;=&nbsp;new&nbsp;zcl_json_string(&nbsp;string_cast&nbsp;).<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;Structures<br />
+&nbsp;&nbsp;&nbsp;&nbsp;elseif&nbsp;(&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_struct1&nbsp;or<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_struct2&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returning&nbsp;=&nbsp;new&nbsp;zcl_json_object(&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json_obj_cast&nbsp;?=&nbsp;returning.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data(struct_descr)&nbsp;=&nbsp;cast&nbsp;cl_abap_structdescr(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cl_abap_structdescr=&gt;describe_by_data(&nbsp;data&nbsp;)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;at&nbsp;struct_descr-&gt;components&nbsp;assigning&nbsp;field-symbol(&lt;cmp&gt;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assign&nbsp;component&nbsp;&lt;cmp&gt;-name&nbsp;of&nbsp;structure&nbsp;data&nbsp;to&nbsp;field-symbol(&lt;data&gt;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json_res&nbsp;=&nbsp;zcl_json_parser=&gt;abap_to_json(&nbsp;data&nbsp;=&nbsp;&lt;data&gt;&nbsp;stack&nbsp;=&nbsp;stack&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name_bucket&nbsp;=&nbsp;conv&nbsp;string(&nbsp;&lt;cmp&gt;-name&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;translate&nbsp;name_bucket&nbsp;to&nbsp;lower&nbsp;case.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json_obj_cast-&gt;add(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new&nbsp;zcl_json_pair(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;=&nbsp;name_bucket<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value&nbsp;=&nbsp;json_res<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;endloop.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;Tables<br />
+&nbsp;&nbsp;&nbsp;&nbsp;elseif&nbsp;(&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_table&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returning&nbsp;=&nbsp;new&nbsp;zcl_json_array(&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json_arr_cast&nbsp;?=&nbsp;returning.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assign&nbsp;data&nbsp;to&nbsp;&lt;table&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;at&nbsp;&lt;table&gt;&nbsp;assigning&nbsp;field-symbol(&lt;row&gt;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json_res&nbsp;=&nbsp;zcl_json_parser=&gt;abap_to_json(&nbsp;data&nbsp;=&nbsp;&lt;row&gt;&nbsp;stack&nbsp;=&nbsp;stack&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json_arr_cast-&gt;append(&nbsp;json_res&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;endloop.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;Object&nbsp;reference<br />
+&nbsp;&nbsp;&nbsp;&nbsp;elseif&nbsp;(&nbsp;type_descr-&gt;type_kind&nbsp;=&nbsp;cl_abap_typedescr=&gt;typekind_oref&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(&nbsp;data&nbsp;is&nbsp;bound&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returning&nbsp;=&nbsp;new&nbsp;zcl_json_object(&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json_obj_cast&nbsp;?=&nbsp;returning.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;oref&nbsp;=&nbsp;data.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data(class_descr)&nbsp;=&nbsp;cast&nbsp;cl_abap_classdescr(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cl_abap_classdescr=&gt;describe_by_object_ref(&nbsp;oref&nbsp;)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ls_stack-object&nbsp;=&nbsp;oref.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;append&nbsp;ls_stack&nbsp;to&nbsp;_stack.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;at&nbsp;class_descr-&gt;attributes&nbsp;assigning&nbsp;field-symbol(&lt;attr&gt;)&nbsp;where&nbsp;visibility&nbsp;=&nbsp;'U'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assign&nbsp;oref-&gt;(&lt;attr&gt;-name)&nbsp;to&nbsp;&lt;oattr&gt;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"&nbsp;Don't&nbsp;add&nbsp;classes&nbsp;already&nbsp;in&nbsp;this&nbsp;stack<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read&nbsp;table&nbsp;stack&nbsp;with&nbsp;key&nbsp;object&nbsp;=&nbsp;oref&nbsp;transporting&nbsp;no&nbsp;fields.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(&nbsp;sy-subrc&nbsp;=&nbsp;0&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;endif.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json_res&nbsp;=&nbsp;zcl_json_parser=&gt;abap_to_json(&nbsp;data&nbsp;=&nbsp;&lt;oattr&gt;&nbsp;stack&nbsp;=&nbsp;_stack&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name_bucket&nbsp;=&nbsp;conv&nbsp;string(&nbsp;&lt;attr&gt;-name&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;translate&nbsp;name_bucket&nbsp;to&nbsp;lower&nbsp;case.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json_obj_cast-&gt;add(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new&nbsp;zcl_json_pair(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;=&nbsp;name_bucket<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value&nbsp;=&nbsp;json_res<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;endloop.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returning&nbsp;=&nbsp;new&nbsp;zcl_json_null(&nbsp;).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;endif.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;endif.<br />
+&nbsp;&nbsp;endmethod.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>

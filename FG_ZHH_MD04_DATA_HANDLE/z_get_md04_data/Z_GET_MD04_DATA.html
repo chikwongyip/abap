@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=GB2312" />
+<title>Z_GET_MD04_DATA</title>
+<style type="text/css">
+.code{ font-family:"Courier New", Courier, monospace; color:#000; font-size:14px; background-color:#F2F4F7 }
+  .codeComment {font-family:"Courier New", Courier, monospace; color:#0000F0; font-size:14px; background-color:#F2F4F7 }
+  .normalBold{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; font-weight:800 }
+  .normalBoldLarge{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+</style>
+<style type="text/css">
+  .normal{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px }
+  .footer{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:12px; text-align: center }
+  h2{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:16px; font-weight:800 }
+  h3{ font-family:Arial, Helvetica, sans-serif; color:#000; font-size:14px; font-weight:800 }
+  .outerTable{
+   background-color:#E0E7ED;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-right-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+  .innerTable{
+   background-color:#F2F4F7;
+   width:100%;
+   border-top-width: thin;
+   border-right-width: thin;
+   border-bottom-width: thin;
+   border-left-width: thin;
+   border-top-style: solid;
+   border-right-style: solid;
+   border-bottom-style: solid;
+   border-left-style: solid;
+  }
+</style>
+</head>
+<body>
+<table class="outerTable">
+  <tr class="normalBoldLarge">
+     <td><h2>Code listing for function Z_GET_MD04_DATA</h2>
+<h3> Description: get MD04 data</h3></td>
+   </tr>
+  <tr>
+     <td>
+     <table class="innerTable">
+       <tr>
+          <td>
+   <div class="code">
+FUNCTION Z_GET_MD04_DATA.<br />
+   </div>
+   <div class="codeComment">
+*"----------------------------------------------------------------------<br />
+*"*"Local Interface:<br />
+*"  IMPORTING<br />
+*"     REFERENCE(MATERIAL) TYPE  BAPI_MRP_MAT_PARAM-MATERIAL<br />
+*"     REFERENCE(PLANT) TYPE  BAPI_MRP_MAT_PARAM-PLANT OPTIONAL<br />
+*"     REFERENCE(MRP_AREA) TYPE  BAPI_MRP_MAT_PARAM-MRP_AREA OPTIONAL<br />
+*"     REFERENCE(PLAN_SCENARIO) TYPE  BAPI_MRP_MAT_PARAM-PLAN_SCENARIO<br />
+*"       OPTIONAL<br />
+*"     REFERENCE(SELECTION_RULE) TYPE<br />
+*"        BAPI_MRP_LIST_PARAM-SELECTION_RULE OPTIONAL<br />
+*"     REFERENCE(DISPLAY_FILTER) TYPE<br />
+*"        BAPI_MRP_LIST_PARAM-DISPLAY_FILTER OPTIONAL<br />
+*"     REFERENCE(PERIOD_INDICATOR) TYPE<br />
+*"        BAPI_MRP_LIST_PARAM-PERIOD_INDICATOR OPTIONAL<br />
+*"     REFERENCE(GET_ITEM_DETAILS) TYPE<br />
+*"        BAPI_MRP_LIST_PARAM-GET_ITEM_DETAILS DEFAULT 'X'<br />
+*"     REFERENCE(GET_IND_LINES) TYPE  BAPI_MRP_LIST_PARAM-GET_IND_LINES<br />
+*"       DEFAULT 'X'<br />
+*"     REFERENCE(GET_TOTAL_LINES) TYPE<br />
+*"        BAPI_MRP_LIST_PARAM-GET_TOTAL_LINES DEFAULT 'X'<br />
+*"     REFERENCE(IGNORE_BUFFER) TYPE  BAPI_MRP_LIST_PARAM-IGNORE_BUFFER<br />
+*"       OPTIONAL<br />
+*"     REFERENCE(I_VRFWE) TYPE  CHAR1 OPTIONAL<br />
+*"  EXPORTING<br />
+*"     REFERENCE(MRP_LIST) TYPE  BAPI_MRP_LIST<br />
+*"     REFERENCE(MRP_CONTROL_PARAM) TYPE  BAPI_MRP_CONTROL_PARAM<br />
+*"     REFERENCE(MRP_STOCK_DETAIL) TYPE  BAPI_MRP_STOCK_DETAIL<br />
+*"  TABLES<br />
+*"      MRP_ITEMS STRUCTURE  BAPI_MRP_ITEMS OPTIONAL<br />
+*"      MRP_IND_LINES STRUCTURE  BAPI_MRP_IND_LINES OPTIONAL<br />
+*"      MRP_TOTAL_LINES STRUCTURE  BAPI_MRP_TOTAL_LINES OPTIONAL<br />
+*"----------------------------------------------------------------------<br />
+
+<div class="codeComment">*       <a href ="global-z_get_md04_data.html">Global data declarations</a></div><br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;DATA:&nbsp;itab_mdps&nbsp;TYPE&nbsp;TABLE&nbsp;OF&nbsp;mdps,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itab_mdez&nbsp;TYPE&nbsp;TABLE&nbsp;OF&nbsp;mdez,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itab_mdsu&nbsp;TYPE&nbsp;TABLE&nbsp;OF&nbsp;mdsu,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_mt61d&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;mt61d,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_mdkp&nbsp;&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;mdkp,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_cm61m&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;cm61m,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_mdsta&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;mdsta,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_ergbz&nbsp;&nbsp;&nbsp;TYPE&nbsp;&nbsp;sfilt-ergbz.<br />
+&nbsp;&nbsp;CLEAR:itab_mdps[],itab_mdez[],itab_mdsu[].<br />
+&nbsp;&nbsp;CLEAR:e_mt61d,e_mdkp,e_cm61m,e_mdsta,e_ergbz.<br />
+&nbsp;&nbsp;CLEAR:mrp_list,mrp_control_param,mrp_stock_detail.<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'MD_STOCK_REQUIREMENTS_LIST_API'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plscn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;plan_scenario<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matnr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;material&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"物料<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;werks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;plant&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"工厂<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;berid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;mrp_area&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"MRP&nbsp;区域<br />
+   </div>
+   <div class="codeComment">
+*      afibz         = plan_scenario<br />
+   </div>
+   <div class="code">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inper&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;period_indicator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"T:DAY&nbsp;W:WEEK&nbsp;M:month<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nobuf&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;ignore_buffer<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i_vrfwe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;i_vrfwe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"display&nbsp;as&nbsp;gr&nbsp;day<br />
+&nbsp;&nbsp;&nbsp;&nbsp;IMPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_mt61d&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;e_mt61d<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_mdkp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;e_mdkp<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_cm61m&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;e_cm61m<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e_mdsta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;e_mdsta<br />
+&nbsp;&nbsp;&nbsp;&nbsp;TABLES<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mdpsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;itab_mdps[]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"item&nbsp;in&nbsp;MRP&nbsp;not&nbsp;include&nbsp;safety&nbsp;stock<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mdezx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;itab_mdez[]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"item&nbsp;in&nbsp;mrp&nbsp;include&nbsp;safety&nbsp;stock<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mdsux&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;itab_mdsu[]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"item&nbsp;in&nbsp;MRP&nbsp;total&nbsp;by&nbsp;ava&nbsp;date&nbsp;OR&nbsp;GR&nbsp;DATE<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXCEPTIONS<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error_message&nbsp;=&nbsp;1.<br />
+<br />
+&nbsp;&nbsp;CLEAR:mrp_items[],mrp_ind_lines[],mrp_total_lines[].<br />
+&nbsp;&nbsp;IF&nbsp;get_item_details&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:wa_bapi_mrp_item&nbsp;TYPE&nbsp;bapi_mrp_items.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;itab_mdps&nbsp;INTO&nbsp;DATA(wa_mdps).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEAR:wa_bapi_mrp_item.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'MAP2E_MDPS_TO_BAPI_MRP_ITEMS'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mdps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;wa_mdps<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bapi_mrp_items&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;wa_bapi_mrp_item.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_bapi_mrp_item&nbsp;TO&nbsp;mrp_items.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+<br />
+&nbsp;&nbsp;ENDIF.<br />
+<br />
+&nbsp;&nbsp;IF&nbsp;get_ind_lines&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:wa_bapi_ind_line&nbsp;TYPE&nbsp;bapi_mrp_ind_lines.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;itab_mdez&nbsp;INTO&nbsp;DATA(wa_mdez).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEAR:wa_bapi_ind_line&nbsp;.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'MAP2E_MDEZ_TO_BAPI_MRP_IND_LIN'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mdez&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_mdez<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bapi_mrp_ind_lines&nbsp;=&nbsp;wa_bapi_ind_line.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_bapi_ind_line&nbsp;TO&nbsp;mrp_ind_lines.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+&nbsp;&nbsp;ENDIF.<br />
+<br />
+&nbsp;&nbsp;IF&nbsp;get_total_lines&nbsp;=&nbsp;'X'.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DATA:wa_bapi_total&nbsp;TYPE&nbsp;bapi_mrp_total_lines.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;LOOP&nbsp;AT&nbsp;itab_mdsu&nbsp;INTO&nbsp;DATA(wa_mdsu).<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CLEAR:wa_bapi_total.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'MAP2E_MDSU_TO_BAPI_MRP_TOTAL_L'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mdsu&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wa_mdsu<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHANGING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bapi_mrp_total_lines&nbsp;=&nbsp;wa_bapi_total.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APPEND&nbsp;wa_bapi_total&nbsp;TO&nbsp;mrp_total_lines.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;ENDLOOP.<br />
+&nbsp;&nbsp;ENDIF.<br />
+<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'MAP2E_MDKP_TO_BAPI_MRP_LIST'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mdkp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;e_mdkp<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CHANGING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bapi_mrp_list&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;mrp_list.<br />
+<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'MAP2E_MDSTA_TO_BAPI_MRP_STOCK_'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mdsta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;e_mdsta<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CHANGING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bapi_mrp_stock_detail&nbsp;=&nbsp;mrp_stock_detail.<br />
+<br />
+&nbsp;&nbsp;CALL&nbsp;FUNCTION&nbsp;'MAP2E_CM61M_TO_BAPI_MRP_CONTRO'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;EXPORTING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cm61m&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;e_cm61m<br />
+&nbsp;&nbsp;&nbsp;&nbsp;CHANGING<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bapi_mrp_control_param&nbsp;=&nbsp;mrp_control_param.<br />
+<br />
+ENDFUNCTION.<br />
+            </div>
+          </td>
+        </tr>
+      </table>
+      </td>
+      </tr>
+   <tr>
+<td class="footer">Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2021. Sap Release 750 [ Updated to v1.5.5.4 by lijq21@qq.com]</td>
+   </tr>
+</table>
+</body>
+</html>
